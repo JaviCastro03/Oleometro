@@ -1,0 +1,31 @@
+.wrap {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 18vh 16px;
+  text-align: center;
+}
+
+.wrap p {
+  max-width: 44ch;
+  color: var(--ink-2);
+}
+
+.retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(160deg, var(--oil-1), var(--oil-2));
+  color: #2b2005;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 20px -10px rgb(196 141 13 / 0.8);
+  transition: transform 0.2s ease;
+}
+
+.retry:hover {
+  transform: translateY(-2px);
+}

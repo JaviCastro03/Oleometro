@@ -1,0 +1,123 @@
+.bottle {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 540px;
+  overflow: visible;
+  filter: drop-shadow(0 30px 34px rgb(60 70 20 / 0.22));
+}
+
+.shadow {
+  fill: rgb(40 50 10 / 0.22);
+  filter: blur(4px);
+}
+
+.glass {
+  fill: rgb(255 255 255 / 0.2);
+}
+
+:global([data-theme='dark']) .glass {
+  fill: rgb(255 255 255 / 0.05);
+}
+
+.outline {
+  fill: none;
+  stroke: rgb(255 255 255 / 0.85);
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+
+:global([data-theme='dark']) .outline {
+  stroke: rgb(232 239 220 / 0.45);
+}
+
+.highlight {
+  fill: none;
+  stroke: rgb(255 255 255 / 0.55);
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.ridges {
+  stroke: rgb(255 255 255 / 0.28);
+  stroke-width: 1.5;
+}
+
+.label {
+  fill: var(--paper);
+  stroke: rgb(0 0 0 / 0.12);
+}
+
+.labelSmall {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 10px;
+  fill: #5a4a10;
+}
+
+.labelTitle {
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 100, 'WONK' 1;
+  font-weight: 700;
+  font-size: 15px;
+  fill: #3b3a0a;
+}
+
+.rule {
+  stroke: #a08a2c;
+  stroke-width: 1;
+}
+
+.waveFront,
+.waveBack {
+  will-change: transform;
+}
+
+.waveFront {
+  animation: slide 5s linear infinite;
+}
+
+.waveBack {
+  transform: translateX(-60px);
+  animation: slide-reverse 8s linear infinite;
+}
+
+@keyframes slide {
+  from {
+    transform: translateX(-110px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-reverse {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-110px);
+  }
+}
+
+.scale path,
+.current path {
+  stroke: var(--ink-3);
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.scale text {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  fill: var(--ink-3);
+}
+
+.current text {
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 100;
+  font-weight: 700;
+  font-size: 19px;
+  fill: var(--ink);
+}

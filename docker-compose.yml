@@ -1,0 +1,21 @@
+# docker compose up --build
+#   web -> http://localhost:8080   (React, talks to the API)
+#   api -> http://localhost:8000/docs
+services:
+  api:
+    build: ./backend
+    environment:
+      OLIVE_DATA_SOURCE: ${OLIVE_DATA_SOURCE:-sample}   # "agridata" for real EU data
+      OLIVE_CORS_ORIGINS: http://localhost:8080
+    ports:
+      - '8000:8000'
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: http://localhost:8000
+    depends_on:
+      - api
+    ports:
+      - '8080:80'

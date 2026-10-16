@@ -1,0 +1,93 @@
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+  align-items: center;
+  gap: clamp(24px, 5vw, 72px);
+  padding-block: clamp(12px, 3vw, 36px) clamp(8px, 2vw, 20px);
+}
+
+.copy {
+  display: grid;
+  gap: clamp(16px, 2.2vw, 26px);
+  justify-items: start;
+}
+
+.title {
+  max-width: 14ch;
+  font-size: var(--step-4);
+  font-weight: 640;
+  font-variation-settings: 'SOFT' 100, 'WONK' 1, 'opsz' 144;
+  letter-spacing: -0.022em;
+  word-spacing: 0.08em;
+  line-height: 1;
+}
+
+.lead {
+  max-width: 46ch;
+  font-size: var(--step-1);
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 28px;
+}
+
+.filter {
+  display: grid;
+  gap: 8px;
+}
+
+.filterLabel {
+  font-size: var(--step--1);
+  font-weight: 700;
+  color: var(--ink-3);
+  padding-left: 6px;
+}
+
+.story {
+  max-width: 52ch;
+  padding-left: 16px;
+  border-left: 3px solid var(--gold);
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-variation-settings: 'SOFT' 100;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.figure {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  justify-items: center;
+}
+
+.figure figcaption {
+  max-width: 34ch;
+  text-align: center;
+  font-size: var(--step--1);
+  color: var(--ink-3);
+  line-height: 1.5;
+}
+
+.figure figcaption strong {
+  color: var(--ink);
+}
+
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .title {
+    max-width: 16ch;
+  }
+
+  .figure {
+    max-width: 380px;
+    margin-inline: auto;
+  }
+}

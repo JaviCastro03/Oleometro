@@ -1,0 +1,46 @@
+@property --angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.button {
+  position: relative;
+  display: inline-flex;
+  padding: 2px;
+  border-radius: 999px;
+  text-decoration: none;
+  background: conic-gradient(from var(--angle), transparent 0 55%, var(--gold) 75%, var(--oil-1) 85%, transparent 100%);
+  animation: spin 4.5s linear infinite;
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: var(--step--1);
+}
+
+.button:hover {
+  filter: drop-shadow(0 0 10px rgb(217 162 27 / 0.55));
+  transform: translateY(-1px);
+}
+
+@keyframes spin {
+  to {
+    --angle: 360deg;
+  }
+}
+
+@supports not (background: conic-gradient(from var(--angle), red, blue)) {
+  .button {
+    background: var(--gold);
+    animation: none;
+  }
+}

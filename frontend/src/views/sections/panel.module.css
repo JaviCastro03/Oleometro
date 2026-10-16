@@ -1,0 +1,60 @@
+.panel {
+  display: grid;
+  gap: 18px;
+  padding: clamp(18px, 2.4vw, 28px);
+  border-radius: var(--r-xl);
+  min-width: 0;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px 24px;
+}
+
+.title {
+  font-size: var(--step-2);
+}
+
+.sub {
+  margin-top: 6px;
+  max-width: 56ch;
+  font-size: var(--step--1);
+  color: var(--ink-3);
+}
+
+.chart {
+  height: 360px;
+  min-width: 0;
+}
+
+.chartShort {
+  height: 320px;
+  min-width: 0;
+}
+
+.details {
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+
+.details summary {
+  cursor: pointer;
+  font-size: var(--step--1);
+  font-weight: 700;
+  color: var(--ink-2);
+  width: max-content;
+}
+
+.details[open] summary {
+  margin-bottom: 12px;
+}
+
+@container (max-width: 560px) {
+  .chart,
+  .chartShort {
+    height: 280px;
+  }
+}

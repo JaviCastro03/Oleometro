@@ -1,0 +1,45 @@
+.wrap {
+  display: grid;
+  place-items: center;
+  gap: 18px;
+  min-height: 55vh;
+  color: var(--ink-2);
+  font-weight: 600;
+}
+
+.drops {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  height: 48px;
+}
+
+.drops span {
+  width: 20px;
+  height: 26px;
+  border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%;
+  background: linear-gradient(180deg, var(--oil-1), var(--oil-3));
+  box-shadow: inset -3px -4px 6px rgb(0 0 0 / 0.2), inset 3px 3px 5px rgb(255 255 255 / 0.5);
+  animation: bounce 0.9s cubic-bezier(0.3, 0, 0.4, 1) infinite;
+}
+
+.drops span:nth-child(2) {
+  animation-delay: 0.12s;
+}
+
+.drops span:nth-child(3) {
+  animation-delay: 0.24s;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+  45% {
+    transform: translateY(-22px) scaleY(1.12);
+  }
+  85% {
+    transform: translateY(0) scaleY(0.82);
+  }
+}

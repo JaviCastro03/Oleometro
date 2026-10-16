@@ -1,0 +1,96 @@
+/* Design tokens. Light is the default; dark swaps the values, never the names. */
+:root {
+  --font-display: 'Fraunces Variable', 'Iowan Old Style', Georgia, serif;
+  --font-body: 'Manrope Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --step--1: clamp(0.78rem, 0.76rem + 0.1vw, 0.84rem);
+  --step-0: clamp(0.95rem, 0.92rem + 0.15vw, 1.04rem);
+  --step-1: clamp(1.15rem, 1.08rem + 0.35vw, 1.35rem);
+  --step-2: clamp(1.45rem, 1.3rem + 0.75vw, 1.9rem);
+  --step-3: clamp(1.9rem, 1.55rem + 1.7vw, 2.9rem);
+  --step-4: clamp(2.5rem, 1.7rem + 4vw, 5rem);
+
+  --r-xl: 32px;
+  --r-lg: 24px;
+  --r-md: 14px;
+  --r-sm: 8px;
+
+  color-scheme: light;
+  --bg: #e7eddb;
+  --bg-deep: #d3dcc0;
+  --surface: #f6f8ef;
+  --ink: #1f2d1c;
+  --ink-2: #435340;
+  --ink-3: #566652;
+  --line: rgb(31 45 28 / 0.14);
+  --grid: rgb(31 45 28 / 0.09);
+
+  --glass: rgb(255 255 255 / 0.52);
+  --glass-strong: rgb(255 255 255 / 0.74);
+  --glass-border: rgb(255 255 255 / 0.78);
+  --glass-shadow: 0 1px 0 rgb(255 255 255 / 0.8) inset, 0 22px 44px -26px rgb(45 65 30 / 0.4);
+  --spot: rgb(217 162 27 / 0.24);
+
+  --olive: #66741f;
+  --gold: #d9a21b;
+  --oil-1: #f6d35c;
+  --oil-2: #c48d0d;
+  --oil-3: #8e8a1a;
+  --paper: #f7f2dd;
+
+  --up: #2c6a27;
+  --down: #a3382a;
+  --up-bg: rgb(44 106 39 / 0.12);
+  --down-bg: rgb(163 56 42 / 0.12);
+  --focus: #2f6fa3;
+
+  /* Categorical palette, validated for CVD separation and contrast (see README). */
+  --c-ES: #b26a00;
+  --c-IT: #2f6fa3;
+  --c-GR: #b5367a;
+  --c-PT: #3a8f3a;
+  --c-other: #6b6b6b;
+
+  --aurora-a: rgb(217 162 27 / 0.32);
+  --aurora-b: rgb(102 116 31 / 0.3);
+  --aurora-c: rgb(47 111 163 / 0.2);
+  --grain-opacity: 0.22;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0f1914;
+  --bg-deep: #0a120e;
+  --surface: #15231b;
+  --ink: #e8efdc;
+  --ink-2: #bdcab1;
+  --ink-3: #94a58b;
+  --line: rgb(232 239 220 / 0.14);
+  --grid: rgb(232 239 220 / 0.08);
+
+  --glass: rgb(255 255 255 / 0.055);
+  --glass-strong: rgb(255 255 255 / 0.1);
+  --glass-border: rgb(255 255 255 / 0.12);
+  --glass-shadow: 0 1px 0 rgb(255 255 255 / 0.07) inset, 0 26px 50px -28px rgb(0 0 0 / 0.8);
+  --spot: rgb(246 211 92 / 0.16);
+
+  --olive: #a9bb4a;
+  --paper: #efe7c8;
+
+  --up: #86d07b;
+  --down: #f39384;
+  --up-bg: rgb(134 208 123 / 0.14);
+  --down-bg: rgb(243 147 132 / 0.14);
+  --focus: #7db6e8;
+
+  --c-ES: #c47a14;
+  --c-IT: #5090cc;
+  --c-GR: #d45e8e;
+  --c-PT: #66a845;
+  --c-other: #9a9a9a;
+
+  --aurora-a: rgb(217 162 27 / 0.16);
+  --aurora-b: rgb(102 116 31 / 0.2);
+  --aurora-c: rgb(47 111 163 / 0.14);
+  --grain-opacity: 0.14;
+}
