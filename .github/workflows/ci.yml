@@ -1,38 +1,74 @@
+# ============================================================
+# ci.yml  ->  EL "REVISOR" AUTOMÁTICO
+# ------------------------------------------------------------
+# CI significa "Integración Continua". Es un robot de GitHub
+# que, cada vez que subes código, lo descarga en un ordenador
+# limpio y comprueba que todo funciona (tests y compilación).
+# Si algo falla, te sale una cruz roja en la pestaña Actions.
+# Si todo va bien, te sale un tick verde.
+# Este robot NO publica la web. De eso se encarga deploy.yml.
+# ============================================================
+
+# Nombre que verás en la pestaña "Actions" de GitHub
 name: CI
 
+# CUÁNDO se ejecuta el robot
 on:
   push:
-    branches: [main]
-  pull_request:
+    branches: [main] # cada vez que subes código (git push) a la rama main
+  pull_request: # y cada vez que alguien propone un cambio (pull request)
 
+# QUÉ trabajos hace. Aquí hay dos y se ejecutan A LA VEZ, en
+# paralelo, cada uno en su propio ordenador: uno revisa Python y
+# el otro revisa React.
 jobs:
+  # ---------- TRABAJO 1: revisar el backend (Python) ----------
   backend:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # el ordenador virtual que usa GitHub (Linux, gratis)
     defaults:
       run:
-        working-directory: backend
+        working-directory: backend # todos los comandos se ejecutan dentro de la carpeta backend
     steps:
+      # Paso 1: descargar tu código del repositorio al ordenador del robot
       - uses: actions/checkout@v4
+
+      # Paso 2: instalar Python 3.12
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-          cache: pip
-          cache-dependency-path: backend/requirements-dev.txt
+          python-version: "3.12"
+          cache: pip # guarda las librerías descargadas para que la próxima vez vaya más rápido
+          cache-dependency-path: backend/requirements-dev.txt # la caché se renueva si cambia este archivo (la lista de librerías)
+
+      # Paso 3: instalar las librerías que necesita el backend (FastAPI, pytest...)
       - run: pip install -r requirements-dev.txt
+
+      # Paso 4: ejecutar los 39 tests de Python. Si uno falla, el robot se pone en rojo.
       - run: python -m pytest -q
 
+  # ---------- TRABAJO 2: revisar el frontend (React) ----------
   frontend:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: frontend
+        working-directory: frontend # aquí los comandos se ejecutan dentro de la carpeta frontend
     steps:
+      # Paso 1: descargar tu código
       - uses: actions/checkout@v4
+
+      # Paso 2: instalar Node.js 22 (el programa que ejecuta npm)
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
+          cache: npm # guarda las librerías descargadas para ir más rápido la próxima vez
+          cache-dependency-path: frontend/package-lock.json # la caché se renueva si cambia este archivo
+
+      # Paso 3: instalar las librerías (React, Recharts...). "npm ci" instala
+      # exactamente las versiones apuntadas en package-lock.json, así el
+      # resultado es siempre el mismo.
       - run: npm ci
+
+      # Paso 4: ejecutar los 11 tests de JavaScript (vitest)
       - run: npm test
+
+      # Paso 5: comprobar que la web se puede construir sin errores (esto es lo que hace Vite)
       - run: npm run build

@@ -8,6 +8,7 @@ import Backdrop from './sections/Backdrop.jsx';
 import ComparePanel from './sections/ComparePanel.jsx';
 import DemoBanner from './sections/DemoBanner.jsx';
 import ErrorState from './sections/ErrorState.jsx';
+import ForecastPanel from './sections/ForecastPanel.jsx';
 import Footer from './sections/Footer.jsx';
 import Header from './sections/Header.jsx';
 import Hero from './sections/Hero.jsx';
@@ -38,6 +39,7 @@ export default function DashboardView({ status, error, model, viewModel, actions
               <Hero model={model} vm={viewModel} actions={actions} />
               <KpiGrid vm={viewModel} />
               <PriceChartPanel vm={viewModel} onRange={actions.setRange} />
+              <ForecastPanel vm={viewModel} />
               <div className={styles.pair}>
                 <ComparePanel model={model} vm={viewModel} />
                 <ProductionPanel model={model} vm={viewModel} />

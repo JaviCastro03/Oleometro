@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 from ..models.catalog import COUNTRY_LABELS, PRODUCT_LABELS, Product
-from ..models.records import DashboardData, Insight, ProductionRecord, Series
+from ..models.records import DashboardData, Forecast, Insight, ProductionRecord, Series
 from .schemas import (
+    BacktestView,
     DashboardView,
+    ForecastHorizonView,
+    ForecastView,
     InsightView,
     MetaView,
     OptionView,
@@ -21,12 +24,39 @@ def present_insight(insight: Insight) -> InsightView:
     return InsightView(**data)
 
 
+def present_forecast(forecast: Forecast) -> ForecastView:
+    horizons = []
+    for h in forecast.horizons:
+        backtest = None
+        if h.backtest is not None:
+            backtest = BacktestView(**{k: getattr(h.backtest, k) for k in h.backtest.__slots__})
+        horizons.append(
+            ForecastHorizonView(
+                key=h.key,
+                weeks=h.weeks,
+                target_date=h.target_date.isoformat(),
+                price=h.price,
+                low=h.low,
+                high=h.high,
+                change_pct=h.change_pct,
+                direction=h.direction,
+                strength=h.strength,
+                backtest=backtest,
+            )
+        )
+    return ForecastView(
+        horizons=horizons,
+        path=[(day.isoformat(), price, low, high) for day, price, low, high in forecast.path],
+    )
+
+
 def present_series(series: Series) -> SeriesView:
     return SeriesView(
         country=series.country_code,
         product=series.product.value,
         points=[(day.isoformat(), price) for day, price in series.points],
         insight=present_insight(series.insight),
+        forecast=present_forecast(series.forecast) if series.forecast else None,
     )
 
 

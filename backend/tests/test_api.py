@@ -42,6 +42,10 @@ def test_dashboard_shape(client):
     assert "2023-12-01" <= es["insight"]["peak_date"] <= "2024-03-01"
     assert 0 <= es["insight"]["level"] <= 1
     assert len(es["points"]) > 300
+    forecast = es["forecast"]
+    assert [h["key"] for h in forecast["horizons"]] == ["week", "month", "year"]
+    assert len(forecast["path"]) == 52
+    assert all(h["low"] <= h["price"] <= h["high"] for h in forecast["horizons"])
 
 
 def test_prices_filters_by_date(client):

@@ -1,0 +1,137 @@
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.card {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  padding: 16px 18px;
+  border-radius: var(--r-md);
+}
+
+.cardTitle {
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--ink-2);
+}
+
+.verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: max-content;
+  max-width: 100%;
+  padding: 4px 12px 4px 8px;
+  border-radius: 999px;
+  font-size: var(--step--1);
+  font-weight: 800;
+}
+
+.up {
+  color: var(--up);
+  background: var(--up-bg);
+}
+
+.down {
+  color: var(--down);
+  background: var(--down-bg);
+}
+
+.flat {
+  color: var(--ink-2);
+  background: var(--grid);
+}
+
+.price {
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 100, 'WONK' 0;
+  font-size: var(--step-2);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.price small {
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--ink-3);
+}
+
+.note {
+  font-size: var(--step--1);
+  color: var(--ink-3);
+  line-height: 1.45;
+}
+
+.caution {
+  font-size: var(--step--1);
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  font-size: var(--step--1);
+  color: var(--ink-3);
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.solid,
+.dashed {
+  display: inline-block;
+  width: 22px;
+  border-top: 2.5px solid;
+}
+
+.dashed {
+  border-top-style: dashed;
+}
+
+.band {
+  display: inline-block;
+  width: 22px;
+  height: 10px;
+  border-radius: 3px;
+  opacity: 0.25;
+}
+
+.trust {
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--glass);
+  font-size: var(--step--1);
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+
+.trustTitle {
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  font-weight: 800;
+  letter-spacing: 0;
+  color: var(--ink);
+}
+
+.disclaimer {
+  color: var(--ink-3);
+}

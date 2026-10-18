@@ -4,7 +4,11 @@ import {
   buildTimeAxis,
   buildViewModel,
   compareRows,
+  describeBacktest,
+  forecastChartRows,
+  forecastLabel,
   formatHash,
+  getSeries,
   parseHash,
   productionRows,
   resolveSelection,
@@ -118,5 +122,47 @@ describe('format', () => {
     expect(pct(-12.34)).toBe('−12,3 %');
     expect(pct(4.5)).toBe('+4,5 %');
     expect(pct(null)).toBe('—');
+  });
+});
+
+describe('forecast', () => {
+  const rawForecast = {
+    horizons: [{ key: 'month', weeks: 4, target_date: '2024-04-14', price: 150, low: 130, high: 170, change_pct: 7, direction: 'up', strength: 'clear', backtest: null }],
+    path: [
+      ['2024-03-10', 142, 138, 146],
+      ['2024-03-17', 145, 139, 151],
+    ],
+  };
+  const withForecast = buildModel({ ...payload, series: [{ ...payload.series[0], forecast: rawForecast }, payload.series[1]] });
+
+  it('keeps working when a series has no forecast', () => {
+    expect(getSeries(model, 'ES', 'evoo').forecast).toBeNull();
+    expect(forecastChartRows(getSeries(model, 'ES', 'evoo'))).toEqual([]);
+  });
+
+  it('joins history and forecast into one chart without a gap', () => {
+    const rows = forecastChartRows(getSeries(withForecast, 'ES', 'evoo'), 2, 4);
+    expect(rows).toHaveLength(3 + 1 + 2);
+    const bridge = rows[3];
+    expect(bridge.price).toBe(135);
+    expect(bridge.forecast).toBe(135);
+    expect(rows[4]).toMatchObject({ forecast: 142, band: [138, 146] });
+    expect(rows[4].price).toBeUndefined();
+  });
+
+  it('words the direction by how sure the model is', () => {
+    expect(forecastLabel({ direction: 'up', strength: 'clear' })).toBe('Subida probable');
+    expect(forecastLabel({ direction: 'down', strength: 'weak' })).toBe('Posible bajada');
+    expect(forecastLabel({ direction: 'flat', strength: 'weak' })).toBe('Estable');
+  });
+
+  it('explains the backtest and warns when it does not beat "nothing changes"', () => {
+    const good = describeBacktest({ samples: 38, mean_error_pct: 4.4, vs_naive_pct: 15, direction_hit_pct: 81, direction_samples: 26 });
+    expect(good).toContain('38 pruebas');
+    expect(good).toContain('81 %');
+    expect(good).toContain('Mejora un 15 %');
+    const bad = describeBacktest({ samples: 20, mean_error_pct: 9, vs_naive_pct: -3, direction_hit_pct: null, direction_samples: 0 });
+    expect(bad).toContain('tómalo con mucha cautela');
+    expect(describeBacktest(null)).toBeNull();
   });
 });

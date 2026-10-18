@@ -9,6 +9,7 @@ from statistics import mean
 from ..core.cache import TTLValue
 from ..models.records import DashboardData, PriceObservation, Series
 from ..repositories.base import OliveOilRepository
+from .forecast import compute_forecast
 from .insights import compute_insights
 
 
@@ -21,7 +22,7 @@ def aggregate_weekly(observations: list[PriceObservation]) -> list[Series]:
     series = []
     for (country, product), weeks in sorted(buckets.items(), key=lambda kv: (kv[0][0], kv[0][1].value)):
         points = tuple((week, round(mean(prices), 2)) for week, prices in sorted(weeks.items()))
-        series.append(Series(country, product, points, compute_insights(points)))
+        series.append(Series(country, product, points, compute_insights(points), compute_forecast(points)))
     return series
 
 

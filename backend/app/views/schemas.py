@@ -28,12 +28,40 @@ class InsightView(BaseModel):
     level: float = Field(ge=0, le=1)
 
 
+class BacktestView(BaseModel):
+    samples: int
+    mean_error_pct: float
+    vs_naive_pct: float | None
+    direction_hit_pct: float | None
+    direction_samples: int
+
+
+class ForecastHorizonView(BaseModel):
+    key: str
+    weeks: int
+    target_date: str
+    price: float
+    low: float
+    high: float
+    change_pct: float
+    direction: str
+    strength: str
+    backtest: BacktestView | None
+
+
+class ForecastView(BaseModel):
+    horizons: list[ForecastHorizonView]
+    #: Compact [ISO date, price, low, high] rows, one per future week.
+    path: list[tuple[str, float, float, float]]
+
+
 class SeriesView(BaseModel):
     country: str
     product: str
     #: Compact [ISO date, EUR/tonne] pairs.
     points: list[tuple[str, float]]
     insight: InsightView
+    forecast: ForecastView | None = None
 
 
 class ProductionView(BaseModel):

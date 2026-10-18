@@ -15,6 +15,7 @@ export function buildModel(payload) {
       product: s.product,
       insight: s.insight,
       points: s.points.map(([date, price]) => ({ date, t: Date.parse(date), price })),
+      forecast: buildForecast(s.forecast),
     });
   }
   return {
@@ -23,6 +24,15 @@ export function buildModel(payload) {
     products: payload.products,
     production: payload.production,
     index,
+  };
+}
+
+/** Convierte la previsión de la API (arrays compactos) en objetos fáciles de usar. Si no hay previsión, null. */
+function buildForecast(raw) {
+  if (!raw) return null;
+  return {
+    horizons: raw.horizons.map((h) => ({ ...h, t: Date.parse(h.target_date) })),
+    path: raw.path.map(([date, price, low, high]) => ({ date, t: Date.parse(date), price, low, high })),
   };
 }
 
@@ -156,6 +166,56 @@ export function resolveSelection(model, picked = {}) {
   return { country, product, range };
 }
 
+// ---------------------------------------------------------------- previsión
+
+export const FORECAST_HORIZONS = {
+  week: { title: 'Próxima semana', short: '1 semana' },
+  month: { title: 'Próximo mes', short: '1 mes' },
+  year: { title: 'Próximo año', short: '1 año' },
+};
+
+/** Etiqueta en palabras de una previsión. "Probable" = el rango entero está a un lado del precio actual. */
+export function forecastLabel({ direction, strength }) {
+  if (direction === 'flat') return 'Estable';
+  const clear = strength === 'clear';
+  if (direction === 'up') return clear ? 'Subida probable' : 'Posible subida';
+  return clear ? 'Bajada probable' : 'Posible bajada';
+}
+
+/** Explica con números cuánto habría acertado el método en el pasado (el "backtest"). */
+export function describeBacktest(backtest) {
+  if (!backtest) return null;
+  const num = (n) => n.toLocaleString('es-ES', { maximumFractionDigits: 1 });
+  const parts = [`En ${backtest.samples} pruebas con datos pasados, se desvió de media un ${num(backtest.mean_error_pct)} % del precio real.`];
+  if (backtest.direction_hit_pct != null) {
+    parts.push(`Acertó si iba a subir o bajar el ${num(backtest.direction_hit_pct)} % de las veces.`);
+  }
+  if (backtest.vs_naive_pct != null) {
+    parts.push(
+      backtest.vs_naive_pct > 0
+        ? `Mejora un ${num(backtest.vs_naive_pct)} % a suponer que el precio se queda igual.`
+        : 'No mejora a suponer que el precio se queda igual: tómalo con mucha cautela.',
+    );
+  }
+  return parts.join(' ');
+}
+
+/**
+ * Filas para el gráfico: el histórico reciente (línea continua) seguido de la
+ * previsión (línea discontinua + banda de rango) hasta `weeks` semanas vista.
+ * La última semana real se repite en la previsión para que las dos líneas se unan.
+ */
+export function forecastChartRows(series, weeks = 13, historyWeeks = 52) {
+  if (!series?.forecast) return [];
+  const history = series.points.slice(-historyWeeks).map((p) => ({ t: p.t, date: p.date, price: p.price }));
+  const last = history[history.length - 1];
+  const future = series.forecast.path
+    .slice(0, weeks)
+    .map((p) => ({ t: p.t, date: p.date, forecast: p.price, band: [p.low, p.high] }));
+  const bridge = { ...last, forecast: last.price, band: [last.price, last.price] };
+  return [...history.slice(0, -1), bridge, ...future];
+}
+
 /** Everything the dashboard view renders for a given selection. */
 export function buildViewModel(model, selection) {
   const series = getSeries(model, selection.country, selection.product);
@@ -169,6 +229,7 @@ export function buildViewModel(model, selection) {
     axis: buildTimeAxis(visible),
     monthly: toMonthly(visible),
     heatmap: seasonalHeatmap(series?.points ?? []),
+    forecast: series?.forecast ?? null,
     compare: compareRows(model, selection.product, selection.range),
     production: productionRows(model),
     countryLabel: model.countries.find((c) => c.id === selection.country)?.label ?? selection.country,
