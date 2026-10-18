@@ -101,26 +101,26 @@ flowchart LR
 
 ### Escalar sin reescribir
 
-| Quiero… | Qué toco |
-|---|---|
-| Otra fuente de datos (MAPA, Poolred, CSV…) | Una clase que cumpla `OliveOilRepository` y una línea en `repositories/__init__.py` |
-| Un nuevo endpoint | `controllers/<nombre>_controller.py` con su `router` y añadirlo a `CONTROLLERS` |
-| Otro país o producto | `OLIVE_COUNTRIES` (env) o `models/catalog.py` |
-| Otro método de previsión | Sustituir `services/forecast.py`; el contrato (`Forecast`) no cambia |
-| Un nuevo panel | Selector en `models/dashboardModel.js`, componente en `views/sections/` y una línea en `DashboardView.jsx` |
-| Una base de datos | Implementar un repositorio nuevo; servicios y controladores no cambian |
+| Quiero…                                    | Qué toco                                                                                                   |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| Otra fuente de datos (MAPA, Poolred, CSV…) | Una clase que cumpla `OliveOilRepository` y una línea en `repositories/__init__.py`                        |
+| Un nuevo endpoint                          | `controllers/<nombre>_controller.py` con su `router` y añadirlo a `CONTROLLERS`                            |
+| Otro país o producto                       | `OLIVE_COUNTRIES` (env) o `models/catalog.py`                                                              |
+| Otro método de previsión                   | Sustituir `services/forecast.py`; el contrato (`Forecast`) no cambia                                       |
+| Un nuevo panel                             | Selector en `models/dashboardModel.js`, componente en `views/sections/` y una línea en `DashboardView.jsx` |
+| Una base de datos                          | Implementar un repositorio nuevo; servicios y controladores no cambian                                     |
 
 ## Decisiones técnicas
 
-| Decisión | Por qué |
-|---|---|
-| **Sitio estático + exportación semanal** | Un script de Python genera `dashboard.json` y GitHub Pages lo sirve. Sin servidor que se duerma, sin base de datos, sin secretos: **coste 0** y cero mantenimiento. La API FastAPI sigue disponible para quien la quiera desplegar. |
-| **Patrón repositorio tras un `Protocol`** | Servicios y controladores no saben de dónde vienen los datos. Hay un repositorio real (API europea) y uno sintético (demo y tests). |
-| **Parseo defensivo** | La especificación de la API no fija formatos: precios y fechas se parsean en varios formatos, se normalizan a €/tonelada (el portal publica €/100 kg), `EL` se trata como Grecia y los países se filtran en local. |
-| **Huecos en los datos** | Los de menos de 4 semanas se rellenan; si son mayores se corta la serie. Sin datos recientes, no se prevé. |
-| **Previsión explicable, no un modelo opaco** | Se puede defender cada paso y, sobre todo, medir su acierto real (backtesting sin fuga de datos). |
-| **Colores validados para daltonismo** | La paleta categórica de países se comprobó (separación, contraste y luminosidad) en claro y oscuro. |
-| **Fallback elegante en el despliegue** | Si la API europea falla en el robot semanal, se publica el dataset de demostración con un aviso visible, nunca una web rota. |
+| Decisión                                     | Por qué                                                                                                                                                                                                                             |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Sitio estático + exportación semanal**     | Un script de Python genera `dashboard.json` y GitHub Pages lo sirve. Sin servidor que se duerma, sin base de datos, sin secretos: **coste 0** y cero mantenimiento. La API FastAPI sigue disponible para quien la quiera desplegar. |
+| **Patrón repositorio tras un `Protocol`**    | Servicios y controladores no saben de dónde vienen los datos. Hay un repositorio real (API europea) y uno sintético (demo y tests).                                                                                                 |
+| **Parseo defensivo**                         | La especificación de la API no fija formatos: precios y fechas se parsean en varios formatos, se normalizan a €/tonelada (el portal publica €/100 kg), `EL` se trata como Grecia y los países se filtran en local.                  |
+| **Huecos en los datos**                      | Los de menos de 4 semanas se rellenan; si son mayores se corta la serie. Sin datos recientes, no se prevé.                                                                                                                          |
+| **Previsión explicable, no un modelo opaco** | Se puede defender cada paso y, sobre todo, medir su acierto real (backtesting sin fuga de datos).                                                                                                                                   |
+| **Colores validados para daltonismo**        | La paleta categórica de países se comprobó (separación, contraste y luminosidad) en claro y oscuro.                                                                                                                                 |
+| **Fallback elegante en el despliegue**       | Si la API europea falla en el robot semanal, se publica el dataset de demostración con un aviso visible, nunca una web rota.                                                                                                        |
 
 ## Datos
 
@@ -135,20 +135,20 @@ Algunas series (por ejemplo Portugal) tienen pocos datos o con huecos en la fuen
 
 ## Stack
 
-| Capa | Tecnología |
-|---|---|
-| Backend | Python 3.12, FastAPI, Pydantic, httpx |
-| Frontend | React 19, Vite, Recharts, Framer Motion, lucide-react |
-| Estilos | CSS Modules, variables CSS, temas claro/oscuro |
-| Tipografía | Fraunces (variable, eje *soft*) + Manrope, autoalojadas con `@fontsource` |
-| Tests | pytest (50) · Vitest (15) |
-| CI/CD | GitHub Actions + GitHub Pages |
-| Opcional | Docker y docker-compose |
+| Capa       | Tecnología                                                                |
+| ---------- | ------------------------------------------------------------------------- |
+| Backend    | Python 3.12, FastAPI, Pydantic, httpx                                     |
+| Frontend   | React 19, Vite, Recharts, Framer Motion, lucide-react                     |
+| Estilos    | CSS Modules, variables CSS, temas claro/oscuro                            |
+| Tipografía | Fraunces (variable, eje _soft_) + Manrope, autoalojadas con `@fontsource` |
+| Tests      | pytest (50) · Vitest (15)                                                 |
+| CI/CD      | GitHub Actions + GitHub Pages                                             |
+| Opcional   | Docker y docker-compose                                                   |
 
 ## Diseño
 
 - **Técnicas**: CSS variables y temas, glassmorphism con `backdrop-filter`, bordes degradados que siguen al puntero (máscaras), `@property` + `conic-gradient`, `color-mix()`, container queries, CSS Grid, SVG con `clipPath` y olas animadas, grano con `feTurbulence`.
-- **Componentes inspirados en el estilo de [Uiverse](https://uiverse.io)** y escritos desde cero para este proyecto: selector deslizante tipo *glider*, interruptor día/noche, botón con borde brillante y loader de gotas.
+- **Componentes inspirados en el estilo de [Uiverse](https://uiverse.io)** y escritos desde cero para este proyecto: selector deslizante tipo _glider_, interruptor día/noche, botón con borde brillante y loader de gotas.
 - **Accesibilidad**: contraste, foco visible, `aria-*`, tablas alternativas a los gráficos y respeto a `prefers-reduced-motion`.
 
 ## Ejecutarlo en local
@@ -183,15 +183,6 @@ Con Docker (opcional): `docker compose up --build` (web en `:8080`, API en `:800
 
 - **Backend (`pytest`, 50 tests)**: parsers, indicadores, previsión (tendencia, estacionalidad, huecos, series abandonadas, backtesting), cliente de la API europea con transporte simulado y contrato HTTP, incluida la comprobación de que el índice solo monta el router de controladores.
 - **Frontend (`vitest`, 15 tests)**: el modelo completo (rangos, medias mensuales, mapa de calor, ejes, selección y hash de la URL, formato y previsión).
-
-## Hoja de ruta
-
-- [ ] Descarga de la serie en CSV
-- [ ] Calculadora de coste de compra a precio de origen
-- [ ] Más países productores (Túnez, Turquía, Marruecos)
-- [ ] Versión en inglés
-- [ ] Cruce con datos de clima y producción
-- [ ] Repositorio con base de datos para guardar un histórico propio
 
 ## Licencia
 
