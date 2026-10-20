@@ -1,0 +1,260 @@
+.wrap {
+  overflow-x: auto;
+  margin: 0 calc(clamp(16px, 2.4vw, 28px) * -1);
+  padding: 0 clamp(16px, 2.4vw, 28px);
+}
+
+.table {
+  width: 100%;
+  min-width: 860px;
+  font-size: var(--text-sm);
+}
+
+.table th,
+.table td {
+  padding: 11px 12px;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+.table thead th {
+  padding-top: 6px;
+  padding-bottom: 8px;
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--ink-3);
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.num {
+  text-align: right !important;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.sortBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.sortBtn:hover {
+  color: var(--ink);
+}
+
+.num .sortBtn {
+  flex-direction: row-reverse;
+}
+
+.arrow {
+  display: inline-block;
+  min-width: 0.8em;
+  color: var(--oil-text);
+}
+
+[aria-sort] .sortBtn {
+  color: var(--ink);
+}
+
+.row {
+  transition: background 0.12s ease;
+}
+
+.row:hover {
+  background: var(--raised);
+}
+
+.selected {
+  background: var(--raised);
+  box-shadow: inset 2px 0 0 var(--oil);
+}
+
+.pick {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+}
+
+.pick:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.dot {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.cPrice {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.cRange {
+  width: 140px;
+}
+
+.cSpark {
+  width: 110px;
+}
+
+.cDate {
+  color: var(--ink-2);
+}
+
+.stale .cPrice,
+.stale .cProduct {
+  color: var(--ink-3);
+}
+
+.tag {
+  display: inline-block;
+  margin-left: var(--s-2);
+  padding: 1px 6px;
+  border: 1px solid var(--warn);
+  border-radius: var(--r-1);
+  font-size: var(--text-xs);
+  color: var(--warn);
+}
+
+.note {
+  max-width: 100ch;
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+}
+
+.note strong {
+  color: var(--ink-2);
+}
+
+.mobileSort {
+  display: none;
+}
+
+.mobileSort select {
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-1);
+  background: var(--bg);
+  font: inherit;
+  font-size: var(--text-sm);
+  color: var(--ink);
+}
+
+/* Móvil: cada fila pasa a ser una ficha compacta (sin zoom ni cifras cortadas). */
+@media (max-width: 760px) {
+  .wrap {
+    overflow: visible;
+    margin: 0;
+    padding: 0;
+  }
+
+  .table {
+    min-width: 0;
+  }
+
+  .table thead,
+  .cRange,
+  .cSpark {
+    display: none;
+  }
+
+  .table,
+  .table tbody {
+    display: block;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-areas:
+      'market market price'
+      'product product price'
+      'week month year'
+      'date date date';
+    gap: 2px var(--s-3);
+    padding: var(--s-3) var(--s-3) var(--s-3) var(--s-2);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .table th,
+  .table td {
+    padding: 0;
+    border: 0;
+    white-space: normal;
+  }
+
+  .cMarket {
+    grid-area: market;
+  }
+
+  .cProduct {
+    grid-area: product;
+    color: var(--ink-3);
+  }
+
+  .cPrice {
+    grid-area: price;
+    align-self: center;
+    font-size: var(--text-lg);
+  }
+
+  .cWeek {
+    grid-area: week;
+  }
+
+  .cMonth {
+    grid-area: month;
+  }
+
+  .cYear {
+    grid-area: year;
+  }
+
+  .cDate {
+    grid-area: date;
+    padding-top: var(--s-1);
+    font-size: var(--text-xs);
+    color: var(--ink-3);
+  }
+
+  .cWeek,
+  .cMonth,
+  .cYear {
+    display: grid;
+    gap: 2px;
+    margin-top: var(--s-2);
+    text-align: left !important;
+  }
+
+  .cWeek::before,
+  .cMonth::before,
+  .cYear::before {
+    content: attr(data-label);
+    font-size: var(--text-xs);
+    color: var(--ink-3);
+  }
+
+  .mobileSort {
+    display: block;
+  }
+}

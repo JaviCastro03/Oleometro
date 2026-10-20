@@ -3,12 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Precio semanal del aceite de oliva en origen en España, Italia, Grecia y Portugal, con datos abiertos de la Comisión Europea." />
-    <meta name="theme-color" content="#E7EDDA" />
+    <title>Oleómetro · Precio del aceite de oliva en origen</title>
+    <meta name="description" content="Precio semanal del aceite de oliva en origen en España, Italia, Grecia y Portugal con datos abiertos de la Comisión Europea: cotizaciones, evolución, previsión y producción." />
+    <meta name="theme-color" content="#0a0b05" />
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <title>Oleómetro · Precio del aceite de oliva</title>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Oleómetro · Precio del aceite de oliva en origen" />
+    <meta property="og:description" content="Cotizaciones semanales, evolución y previsión del aceite de oliva virgen extra, virgen y lampante, con datos de la Comisión Europea." />
+    <meta property="og:locale" content="es_ES" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Dataset",
+        "name": "Precio semanal del aceite de oliva en origen (UE)",
+        "description": "Precios medios semanales en origen del aceite de oliva virgen extra, virgen y lampante en España, Italia, Grecia y Portugal, y producción anual. Fuente: Comisión Europea, Agri-food Data Portal.",
+        "inLanguage": "es",
+        "creator": { "@type": "Person", "name": "JaviCastro03", "url": "https://github.com/JaviCastro03" },
+        "isBasedOn": "https://agridata.ec.europa.eu/extensions/DataPortal/olive-oil.html"
+      }
+    </script>
     <script>
-      // Apply the saved/system theme before first paint to avoid a flash.
+      // Aplica el tema guardado (o el del sistema) ANTES de pintar la página, para evitar un parpadeo.
       try {
         var saved = localStorage.getItem('oleometro-theme');
         var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -18,8 +34,8 @@
   </head>
   <body>
     <div id="root"></div>
-    <noscript>Oleómetro necesita JavaScript para dibujar los gráficos.</noscript>
-    <!-- The index wires exactly one thing: the entry that mounts the controller. -->
+    <noscript>Oleómetro necesita JavaScript para dibujar los gráficos y las cotizaciones.</noscript>
+    <!-- Carga main.jsx, que monta la app React dentro del <div id="root"> de arriba. -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

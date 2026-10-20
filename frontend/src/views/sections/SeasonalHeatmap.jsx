@@ -1,12 +1,10 @@
-import { useId, useState } from 'react';
+import { useState } from 'react';
 import { MONTHS_ES, countryColor } from '../../models/constants.js';
 import { eur, monthYear } from '../../models/format.js';
-import SpotlightCard from '../ui/SpotlightCard.jsx';
-import panel from './panel.module.css';
+import Panel from '../ui/Panel.jsx';
 import styles from './SeasonalHeatmap.module.css';
 
 export default function SeasonalHeatmap({ vm }) {
-  const headingId = `${useId()}-h`;
   const [hover, setHover] = useState(null);
   const { rows, min, max } = vm.heatmap;
   if (!rows.length) return null;
@@ -16,24 +14,18 @@ export default function SeasonalHeatmap({ vm }) {
     : 'Pasa el cursor por un mes para ver su precio medio.';
 
   return (
-    <SpotlightCard as="section" className={panel.panel} aria-labelledby={headingId}>
-      <header className={panel.head}>
-        <div>
-          <h2 id={headingId} className={panel.title}>
-            Mes a mes, año a año
-          </h2>
-          <p className={panel.sub}>
-            Precio medio mensual de {vm.productLabel} en {vm.countryLabel}. Cuanto más intenso el color, más caro estuvo
-            ese mes.
-          </p>
-        </div>
+    <Panel
+      id="estacionalidad"
+      title="Mes a mes, año a año"
+      sub={`Precio medio mensual de ${vm.productLabel} en ${vm.countryLabel}. Cuanto más intenso el color, más caro estuvo ese mes.`}
+      actions={
         <div className={styles.scale} aria-hidden="true">
           <span>{eur(min)}</span>
           <span className={styles.ramp} style={{ '--heat': countryColor(vm.selection.country) }} />
           <span>{eur(max)}</span>
         </div>
-      </header>
-
+      }
+    >
       <p className={styles.readout} aria-live="polite">
         {readout}
       </p>
@@ -75,6 +67,6 @@ export default function SeasonalHeatmap({ vm }) {
           </div>
         ))}
       </div>
-    </SpotlightCard>
+    </Panel>
   );
 }

@@ -1,0 +1,262 @@
+.hero {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: center;
+  min-height: calc(100svh - 80px);
+  padding: clamp(24px, 5vh, 60px) var(--gutter) clamp(40px, 7vh, 84px);
+  overflow: hidden;
+}
+
+/* La gran Gota de Aceite protagonista: centrada o hacia la derecha */
+.sphereWrap {
+  position: absolute;
+  z-index: 0;
+  top: 6%;
+  right: clamp(4%, 10vw, 15%);
+  width: clamp(270px, min(42vw, 56svh), 560px);
+  pointer-events: none;
+}
+
+.copy {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: start;
+  gap: clamp(16px, 2.6vh, 28px);
+  max-width: 1200px;
+  padding-left: clamp(0px, 3vw, 44px);
+}
+
+/* Etiqueta de sección */
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.badgeTag {
+  padding: 3px 8px;
+  border-radius: var(--radius-tags, 500px);
+  background: var(--barn-red, #a0342a);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+/* Titular monumental: actitud de cartel de carretera / almazara */
+.title {
+  font-size: var(--text-display);
+  font-weight: 400;
+  line-height: 0.82;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.title span {
+  color: var(--oil, #ffca50);
+}
+
+/* Texto introductorio */
+.lead {
+  max-width: 38ch;
+  font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.35rem);
+  font-weight: 350;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.highlight {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-16, 16px) var(--spacing-24, 24px);
+}
+
+/* Botón píldora pura (1000px de radio según DESIGN.md): Honeycomb Gold sobre Dark Cocoa */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 30px;
+  border-radius: var(--radius-buttons, 1000px);
+  background: var(--oil, #ffca50);
+  color: var(--on-oil, #3b2722);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: transform 0.18s ease, filter 0.18s ease;
+}
+
+.cta:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+}
+
+.ctaArrow {
+  font-size: 15px;
+  transition: transform 0.18s ease;
+}
+
+.cta:hover .ctaArrow {
+  transform: translateX(4px);
+}
+
+/* Enlace fantasma / secundario */
+.ghost {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 20px;
+  border-radius: var(--radius-buttons, 1000px);
+  border: 1px solid var(--line-strong);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.ghost:hover {
+  border-color: var(--oil, #ffca50);
+  background: color-mix(in srgb, var(--oil) 12%, transparent);
+}
+
+/* Tarjeta de cotización activa */
+.card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: var(--s-2) var(--s-6);
+  width: max-content;
+  max-width: 100%;
+  margin-top: var(--s-2);
+  padding: 18px 24px;
+  color: var(--ink);
+  text-decoration: none;
+  background-color: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-cards, 0px);
+  box-shadow: 0 4px 20px rgb(0 0 0 / 0.15);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.card:hover {
+  border-color: var(--oil, #ffca50);
+  transform: translateY(-2px);
+}
+
+.cardHeader {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--dash);
+}
+
+.cardTag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--oil, #ffca50);
+}
+
+.cardLabel {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.cardPrice {
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 2.85rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.cardPrice small {
+  margin-left: 4px;
+  font-family: var(--font-ui);
+  font-size: 0.5em;
+  font-weight: 500;
+  color: var(--ink-3);
+}
+
+.cardMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+.cardDate {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.cardSkeleton {
+  width: 260px;
+  height: 90px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+
+.serial {
+  position: absolute;
+  right: var(--gutter);
+  bottom: 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  opacity: 0.6;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    min-height: auto;
+    padding-top: 40px;
+    padding-bottom: 60px;
+  }
+
+  .sphereWrap {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 260px;
+    margin: 0 auto 24px;
+  }
+
+  .serial {
+    position: static;
+    margin-top: 24px;
+  }
+}

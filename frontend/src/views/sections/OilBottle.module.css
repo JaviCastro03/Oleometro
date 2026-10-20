@@ -2,122 +2,91 @@
   display: block;
   width: 100%;
   height: auto;
-  max-height: 540px;
   overflow: visible;
-  filter: drop-shadow(0 30px 34px rgb(60 70 20 / 0.22));
-}
-
-.shadow {
-  fill: rgb(40 50 10 / 0.22);
-  filter: blur(4px);
 }
 
 .glass {
-  fill: rgb(255 255 255 / 0.2);
-}
-
-:global([data-theme='dark']) .glass {
-  fill: rgb(255 255 255 / 0.05);
+  fill: color-mix(in srgb, var(--ink) 4%, transparent);
 }
 
 .outline {
   fill: none;
-  stroke: rgb(255 255 255 / 0.85);
-  stroke-width: 3;
+  stroke: var(--ink-2);
+  stroke-width: 1.5;
   stroke-linejoin: round;
 }
 
-:global([data-theme='dark']) .outline {
-  stroke: rgb(232 239 220 / 0.45);
-}
-
-.highlight {
-  fill: none;
-  stroke: rgb(255 255 255 / 0.55);
-  stroke-width: 6;
-  stroke-linecap: round;
+.cap {
+  fill: var(--ink-3);
 }
 
 .ridges {
-  stroke: rgb(255 255 255 / 0.28);
+  stroke: var(--bg);
   stroke-width: 1.5;
+  opacity: 0.55;
+}
+
+.waveBack {
+  animation: drift 7s ease-in-out infinite alternate;
+}
+
+.waveFront {
+  animation: drift 5s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes drift {
+  from {
+    transform: translateX(-60px);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 .label {
-  fill: var(--paper);
-  stroke: rgb(0 0 0 / 0.12);
+  fill: var(--raised);
+  stroke: var(--line-strong);
 }
 
 .labelSmall {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: 10px;
-  fill: #5a4a10;
+  font-family: var(--font-ui);
+  font-size: 9.5px;
+  fill: var(--ink-3);
 }
 
 .labelTitle {
   font-family: var(--font-display);
-  font-variation-settings: 'SOFT' 100, 'WONK' 1;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 15px;
-  fill: #3b3a0a;
+  fill: var(--ink);
 }
 
 .rule {
-  stroke: #a08a2c;
+  stroke: var(--line-strong);
   stroke-width: 1;
 }
 
-.waveFront,
-.waveBack {
-  will-change: transform;
-}
-
-.waveFront {
-  animation: slide 5s linear infinite;
-}
-
-.waveBack {
-  transform: translateX(-60px);
-  animation: slide-reverse 8s linear infinite;
-}
-
-@keyframes slide {
-  from {
-    transform: translateX(-110px);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-@keyframes slide-reverse {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-110px);
-  }
-}
-
-.scale path,
-.current path {
+.scale path {
   stroke: var(--ink-3);
-  stroke-width: 1.5;
-  fill: none;
+  stroke-width: 1;
 }
 
 .scale text {
-  font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 600;
-  fill: var(--ink-3);
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  fill: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.current path {
+  stroke: var(--oil);
+  stroke-width: 2;
 }
 
 .current text {
-  font-family: var(--font-display);
-  font-variation-settings: 'SOFT' 100;
-  font-weight: 700;
-  font-size: 19px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
   fill: var(--ink);
+  font-variant-numeric: tabular-nums;
 }

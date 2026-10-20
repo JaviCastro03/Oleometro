@@ -1,25 +1,26 @@
-import '@fontsource-variable/fraunces/full.css';
-import '@fontsource-variable/manrope/index.css';
+// VISTA PRINCIPAL (la "V" de MVC): ordena las secciones de la página.
+// No calcula ni descarga nada: recibe todo ya preparado del controlador.
+// La fuente se importa aquí: Inter Variable (una sola familia para todo, con cifras tabulares).
+import '@fontsource-variable/inter/index.css';
 import { MotionConfig } from 'framer-motion';
 import '../styles/tokens.css';
 import '../styles/base.css';
-import Loader from './ui/Loader.jsx';
-import Backdrop from './sections/Backdrop.jsx';
-import ComparePanel from './sections/ComparePanel.jsx';
 import DemoBanner from './sections/DemoBanner.jsx';
-import ErrorState from './sections/ErrorState.jsx';
-import ForecastPanel from './sections/ForecastPanel.jsx';
 import Footer from './sections/Footer.jsx';
+import ForecastPanel from './sections/ForecastPanel.jsx';
 import Header from './sections/Header.jsx';
 import Hero from './sections/Hero.jsx';
-import KpiGrid from './sections/KpiGrid.jsx';
+import MethodPanel from './sections/MethodPanel.jsx';
 import PriceChartPanel from './sections/PriceChartPanel.jsx';
 import ProductionPanel from './sections/ProductionPanel.jsx';
+import QuotesTable from './sections/QuotesTable.jsx';
 import SeasonalHeatmap from './sections/SeasonalHeatmap.jsx';
+import { ErrorState, LoadingState } from './sections/States.jsx';
+import PourHero from './pour/PourHero.jsx';
+import PourStage from './pour/PourStage.jsx';
 import styles from './DashboardView.module.css';
 
-/** Pure presentation: receives everything it needs from the controller. */
-export default function DashboardView({ status, error, model, viewModel, actions, theme }) {
+export default function DashboardView({ status, error, model, viewModel, freshness, actions, theme }) {
   const ready = status === 'ready' && model && viewModel?.series;
 
   return (
@@ -27,29 +28,32 @@ export default function DashboardView({ status, error, model, viewModel, actions
       <a className="skip-link" href="#contenido">
         Saltar al contenido
       </a>
-      <Backdrop />
-      <div className={styles.shell}>
-        <Header theme={theme} />
-        <main id="contenido" className={styles.main} tabIndex={-1}>
-          {status === 'loading' && <Loader />}
-          {status === 'error' && <ErrorState message={error} onRetry={actions.reload} />}
-          {ready && (
-            <>
-              {model.meta.is_demo && <DemoBanner />}
-              <Hero model={model} vm={viewModel} actions={actions} />
-              <KpiGrid vm={viewModel} />
-              <PriceChartPanel vm={viewModel} onRange={actions.setRange} />
-              <ForecastPanel vm={viewModel} />
-              <div className={styles.pair}>
-                <ComparePanel model={model} vm={viewModel} />
-                <ProductionPanel model={model} vm={viewModel} />
-              </div>
-              <SeasonalHeatmap vm={viewModel} />
-            </>
-          )}
-        </main>
-        <Footer meta={ready ? model.meta : null} />
-      </div>
+      <Header theme={theme} />
+      <PourStage hero={<PourHero vm={ready ? viewModel : null} />}>
+        <div className={styles.shell}>
+          <main id="contenido" data-main className={styles.main} tabIndex={-1}>
+            {status === 'loading' && <LoadingState />}
+            {status === 'error' && <ErrorState message={error} onRetry={actions.reload} />}
+            {ready && (
+              <>
+                {model.meta.is_demo && <DemoBanner />}
+                <div id="mercado">
+                  <Hero model={model} vm={viewModel} actions={actions} />
+                </div>
+                <QuotesTable model={model} vm={viewModel} actions={actions} />
+                <PriceChartPanel model={model} vm={viewModel} onRange={actions.setRange} />
+                <ForecastPanel vm={viewModel} />
+                <div id="contexto" className={styles.pair}>
+                  <ProductionPanel model={model} vm={viewModel} />
+                  <SeasonalHeatmap vm={viewModel} />
+                </div>
+                <MethodPanel model={model} vm={viewModel} isDemo={model.meta.is_demo} />
+              </>
+            )}
+          </main>
+          <Footer />
+        </div>
+      </PourStage>
     </MotionConfig>
   );
 }

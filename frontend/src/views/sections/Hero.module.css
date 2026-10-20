@@ -1,93 +1,223 @@
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+  grid-template-columns: minmax(0, 1fr) minmax(200px, 300px);
+  gap: var(--s-6) clamp(24px, 5vw, 72px);
   align-items: center;
-  gap: clamp(24px, 5vw, 72px);
-  padding-block: clamp(12px, 3vw, 36px) clamp(8px, 2vw, 20px);
+  padding: clamp(8px, 2vw, 24px) 0 var(--s-2);
 }
 
-.copy {
+.main {
   display: grid;
-  gap: clamp(16px, 2.2vw, 26px);
-  justify-items: start;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-4);
+  min-width: 0;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-bottom: var(--s-2);
 }
 
 .title {
-  max-width: 14ch;
-  font-size: var(--step-4);
-  font-weight: 640;
-  font-variation-settings: 'SOFT' 100, 'WONK' 1, 'opsz' 144;
-  letter-spacing: -0.022em;
-  word-spacing: 0.08em;
-  line-height: 1;
+  font-size: var(--text-xl);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--barn-red, #a0342a);
 }
 
-.lead {
-  max-width: 46ch;
-  font-size: var(--step-1);
-  color: var(--ink-2);
-  line-height: 1.5;
-}
-
-.filters {
+/* El precio: la pieza principal. Serif editorial, cifras tabulares y decimales en segundo plano. */
+.price {
   display: flex;
+  align-items: baseline;
   flex-wrap: wrap;
-  gap: 16px 28px;
-}
-
-.filter {
-  display: grid;
-  gap: 8px;
-}
-
-.filterLabel {
-  font-size: var(--step--1);
-  font-weight: 700;
-  color: var(--ink-3);
-  padding-left: 6px;
-}
-
-.story {
-  max-width: 52ch;
-  padding-left: 16px;
-  border-left: 3px solid var(--gold);
+  gap: 0 var(--s-2);
+  margin-top: calc(var(--s-1) * -1);
   font-family: var(--font-display);
-  font-size: var(--step-1);
-  font-variation-settings: 'SOFT' 100;
+  font-variant-numeric: tabular-nums lining-nums;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+}
+
+.whole {
+  font-size: var(--text-price);
+  font-weight: 400;
+  letter-spacing: -0.05em;
+}
+
+.cents {
+  font-size: calc(var(--text-price) * 0.42);
+  font-weight: 400;
+  color: var(--ink-2);
+  letter-spacing: -0.02em;
+}
+
+.unit {
+  margin-left: var(--s-1);
+  font-family: var(--font-ui);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--ink-3);
+}
+
+.asof {
+  max-width: 62ch;
+  font-size: var(--text-sm);
+  color: var(--ink-3);
+}
+
+.asof strong {
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.changes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, auto));
+  justify-content: start;
+  margin: var(--s-2) 0 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.change {
+  display: grid;
+  gap: 4px;
+  padding: var(--s-3) var(--s-5) var(--s-3) 0;
+  margin-right: var(--s-5);
+  border-right: 1px solid var(--line);
+}
+
+.change:last-child {
+  border-right: 0;
+  margin-right: 0;
+}
+
+.change dt {
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+}
+
+.change dd {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+}
+
+.abs {
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+}
+
+.summary {
+  max-width: var(--measure);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 300;
   line-height: 1.4;
   color: var(--ink);
 }
 
-.figure {
-  display: grid;
-  gap: 14px;
+.gauge {
   margin: 0;
-  justify-items: center;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-3);
 }
 
-.figure figcaption {
-  max-width: 34ch;
-  text-align: center;
-  font-size: var(--step--1);
+.barWrap {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-2) var(--s-4);
+}
+
+.barWrap > :first-child {
+  grid-column: 1 / -1;
+}
+
+.barMin,
+.barMax {
+  font-size: var(--text-xs);
   color: var(--ink-3);
-  line-height: 1.5;
 }
 
-.figure figcaption strong {
-  color: var(--ink);
+.barMax {
+  text-align: right;
 }
 
-@media (max-width: 900px) {
+.caption {
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+  max-width: 34ch;
+}
+
+/* Tablet: el medidor pasa debajo y se queda más estrecho. */
+@media (max-width: 1020px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr) 200px;
+  }
+
+  .changes {
+    grid-template-columns: repeat(2, minmax(0, auto));
+  }
+
+  .change:nth-child(2) {
+    border-right: 0;
+    margin-right: 0;
+  }
+
+  .change:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--line);
+  }
+}
+
+/* Móvil: precio y variaciones primero; la botella se sustituye por una barra de rango. */
+@media (max-width: 720px) {
   .hero {
     grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-5);
   }
 
-  .title {
-    max-width: 16ch;
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .figure {
-    max-width: 380px;
-    margin-inline: auto;
+  .controls > * {
+    width: 100%;
+  }
+
+  .caption {
+    max-width: none;
+  }
+
+  .changes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .change {
+    margin-right: 0;
+    padding-right: var(--s-3);
+  }
+
+  .change:nth-child(odd) {
+    border-right: 1px solid var(--line);
+  }
+
+  .change:nth-child(even) {
+    border-right: 0;
+    padding-left: var(--s-4);
+  }
+
+  .change:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .whole {
+    font-size: clamp(3.3rem, 19vw, 5rem);
   }
 }

@@ -1,23 +1,16 @@
 .tip {
-  min-width: 170px;
-  padding: 12px 14px;
-  border-radius: var(--r-md);
-  background: var(--glass-strong);
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 18px 34px -16px rgb(0 0 0 / 0.45);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
+  min-width: 190px;
+  padding: 10px 12px;
+  border-radius: var(--r-2);
+  background: var(--raised);
+  border: 1px solid var(--line-strong);
   color: var(--ink);
-  font-size: var(--step--1);
-}
-
-:global([data-theme='dark']) .tip {
-  background: rgb(21 35 27 / 0.88);
+  font-size: var(--text-sm);
 }
 
 .title {
   margin-bottom: 8px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--ink-2);
 }
 
@@ -31,15 +24,20 @@
 
 .list li {
   display: grid;
-  grid-template-columns: 12px 1fr auto;
+  grid-template-columns: 10px 1fr auto;
   align-items: center;
   gap: 8px;
 }
 
+.list strong {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
 .swatch {
-  width: 12px;
-  height: 12px;
-  border-radius: 4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
 }
 
 .foot {

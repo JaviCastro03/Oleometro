@@ -1,96 +1,228 @@
-/* Design tokens. Light is the default; dark swaps the values, never the names. */
+/* ===========================================================================
+   Sistema de diseño de Oleómetro. Mezcla dos referencias:
+   - ORYZO: lienzo oscuro cálido, texto en mayúsculas de peso 500, líneas discontinuas, sin sombras,
+     el objeto (la botella) flotando en el vacío, un solo acento "editorial" (el ámbar).
+   - Dala: titulares enormes de peso 400 con tracking negativo, texto ultraligero, sin cajas ni bordes,
+     una nube de triángulos de colores como imagen de marca, un único botón relleno.
+   - OFF+BRAND: una gran esfera con gradiente como único evento de color, titular en mayúsculas apretadas,
+     anillos concéntricos finos y enlaces fantasma con flecha; su pergamino es el tema claro.
+   Los colores violeta y naranja de esas referencias se sustituyen por los del aceite: dorado, oliva y ámbar.
+   Los nombres de las variables no cambian entre temas; solo cambian sus valores.
+   =========================================================================== */
+/* ===========================================================================
+   Sistema de diseño de Oleómetro — Basado en las directrices de DESIGN (3).md:
+   - Americana / Cartelería vintage de aceite: bandas a sangre de dark cocoa,
+     honeycomb gold y cornflower blue.
+   - Tipografía display condensada de gran impacto con interlineado muy ajustado.
+   - Paleta cromática cálida: Dark Cocoa (#3b2722), Cream Parchment (#f2ebd0),
+     Honeycomb Gold (#ffca50), Barn Red (#a0342a), Cornflower Blue (#6aacc2)
+     y Sage Green (#6fa162).
+   - Acabado plano y contundente, botones en píldora pura (1000px) y estética artesanal.
+   =========================================================================== */
 :root {
-  --font-display: 'Fraunces Variable', 'Iowan Old Style', Georgia, serif;
-  --font-body: 'Manrope Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Design Tokens Oficiales (DESIGN (3).md) */
+  --color-dark-cocoa: #3b2722;
+  --color-cream-parchment: #f2ebd0;
+  --color-charcoal: #000000;
+  --color-honeycomb-gold: #ffca50;
+  --color-barn-red: #a0342a;
+  --color-cornflower-blue: #6aacc2;
+  --color-sage-green: #6fa162;
 
-  --step--1: clamp(0.78rem, 0.76rem + 0.1vw, 0.84rem);
-  --step-0: clamp(0.95rem, 0.92rem + 0.15vw, 1.04rem);
-  --step-1: clamp(1.15rem, 1.08rem + 0.35vw, 1.35rem);
-  --step-2: clamp(1.45rem, 1.3rem + 0.75vw, 1.9rem);
-  --step-3: clamp(1.9rem, 1.55rem + 1.7vw, 2.9rem);
-  --step-4: clamp(2.5rem, 1.7rem + 4vw, 5rem);
+  /* Tipografía */
+  --font-display: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-ui: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', monospace;
 
-  --r-xl: 32px;
-  --r-lg: 24px;
-  --r-md: 14px;
-  --r-sm: 8px;
+  /* Escala tipográfica */
+  --text-caption: 12px;
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
+  --text-md: 1.0625rem;
+  --text-lg: 1.25rem;
+  --text-xl: clamp(1.45rem, 1.2rem + 1vw, 1.9rem);
+  --text-2xl: clamp(1.9rem, 1.4rem + 2vw, 2.9rem);
+  --text-price: clamp(3.6rem, 1.4rem + 9.5vw, 8.25rem);
+  --text-title: clamp(1.7rem, 1.1rem + 2.1vw, 2.56rem);
+  --text-display: clamp(2.6rem, 0.8rem + 8vw, 6.8rem);
 
-  color-scheme: light;
-  --bg: #e7eddb;
-  --bg-deep: #d3dcc0;
-  --surface: #f6f8ef;
-  --ink: #1f2d1c;
-  --ink-2: #435340;
-  --ink-3: #566652;
-  --line: rgb(31 45 28 / 0.14);
-  --grid: rgb(31 45 28 / 0.09);
+  /* Espaciado en escala de 8px */
+  --spacing-8: 8px;
+  --spacing-16: 16px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+  --spacing-40: 40px;
+  --spacing-48: 48px;
+  --spacing-80: 80px;
 
-  --glass: rgb(255 255 255 / 0.52);
-  --glass-strong: rgb(255 255 255 / 0.74);
-  --glass-border: rgb(255 255 255 / 0.78);
-  --glass-shadow: 0 1px 0 rgb(255 255 255 / 0.8) inset, 0 22px 44px -26px rgb(45 65 30 / 0.4);
-  --spot: rgb(217 162 27 / 0.24);
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 72px;
 
-  --olive: #66741f;
-  --gold: #d9a21b;
-  --oil-1: #f6d35c;
-  --oil-2: #c48d0d;
-  --oil-3: #8e8a1a;
-  --paper: #f7f2dd;
+  /* Radios de borde según DESIGN (3).md */
+  --radius-tags: 500px;
+  --radius-cards: 0px;
+  --radius-pills: 500px;
+  --radius-buttons: 1000px;
+  --radius-sections: 0px;
+  --r-1: 8px;
+  --r-2: 16px;
+  --r-pill: 1000px;
 
-  --up: #2c6a27;
-  --down: #a3382a;
-  --up-bg: rgb(44 106 39 / 0.12);
-  --down-bg: rgb(163 56 42 / 0.12);
-  --focus: #2f6fa3;
+  --gutter: clamp(16px, 3.2vw, 40px);
+  --section-gap: clamp(72px, 9vw, 120px);
+  --measure: 62ch;
 
-  /* Categorical palette, validated for CVD separation and contrast (see README). */
-  --c-ES: #b26a00;
-  --c-IT: #2f6fa3;
-  --c-GR: #b5367a;
-  --c-PT: #3a8f3a;
-  --c-other: #6b6b6b;
+  /* ---- Modo oscuro: Lienzo Dark Cocoa profundo, pergamino crema cálido y oro miel ---- */
+  color-scheme: dark;
+  --bg: #1e1411;
+  --panel: #271a16;
+  --raised: #34231e;
+  --ink: #f2ebd0;
+  --ink-2: #d6ccb0;
+  --ink-3: #9f9479;
+  --line: rgb(242 235 208 / 0.14);
+  --line-strong: rgb(242 235 208 / 0.32);
+  --dash: rgb(242 235 208 / 0.24);
+  --grid: rgb(242 235 208 / 0.06);
 
-  --aurora-a: rgb(217 162 27 / 0.32);
-  --aurora-b: rgb(102 116 31 / 0.3);
-  --aurora-c: rgb(47 111 163 / 0.2);
-  --grain-opacity: 0.22;
+  /* Acentos de aceite / miel */
+  --oil: #ffca50;
+  --oil-text: #ffca50;
+  --oil-deep: #c99318;
+  --on-oil: #3b2722;
+  --olive: #9bb03a;
+  --verdant: #6fa162;
+  --amber: #e08a22;
+  --stream-a: #ffca50;
+  --stream-b: #bfa128;
+
+  /* Gota de aceite: gradiente multicapa rico y luminoso */
+  --drop-gold: #ffca50;
+  --drop-amber: #e89e22;
+  --drop-olive: #7e9420;
+  --drop-deep: #3b2722;
+  --sphere-0: #ffca50;
+  --sphere-1: #d8b024;
+  --sphere-2: #8f9e23;
+  --sphere-3: #4a5c18;
+  --sphere-4: #241916;
+
+  /* Colores de marca y acentos de DESIGN (3).md */
+  --barn-red: #a0342a;
+  --cornflower-blue: #6aacc2;
+  --sage-green: #6fa162;
+
+  /* Estados semánticos */
+  --up: #7cb844;
+  --down: #e05445;
+  --up-tint: rgb(124 184 68 / 0.16);
+  --down-tint: rgb(224 84 69 / 0.16);
+  --warn: #ffca50;
+  --warn-tint: rgb(255 202 80 / 0.16);
+  --focus: #ffca50;
+
+  /* Charco de aceite inferior (OilPool) - Modo oscuro: profundo y cálido */
+  --pool-front-0: #fff6c8;
+  --pool-front-1: #ffca50;
+  --pool-front-2: #c48210;
+  --pool-front-3: #6e4408;
+
+  --pool-back-0: #cf9215;
+  --pool-back-1: #8a580c;
+  --pool-back-2: #3b2722;
+
+  --pool-body-0: #b87b0f;
+  --pool-body-1: #875408;
+  --pool-body-2: #4f3008;
+  --pool-body-3: var(--bg);
+
+  --pool-sheen: rgba(255, 245, 180, 0.32);
+  --pool-glow: rgba(255, 202, 80, 0.24);
+  --pool-shadow: rgba(255, 245, 180, 0.2);
+
+  /* Países */
+  --c-ES: #d97816;
+  --c-IT: #6aacc2;
+  --c-GR: #cf537b;
+  --c-PT: #6fa162;
+  --c-other: #9a9a9a;
 }
 
-:root[data-theme='dark'] {
-  color-scheme: dark;
-  --bg: #0f1914;
-  --bg-deep: #0a120e;
-  --surface: #15231b;
-  --ink: #e8efdc;
-  --ink-2: #bdcab1;
-  --ink-3: #94a58b;
-  --line: rgb(232 239 220 / 0.14);
-  --grid: rgb(232 239 220 / 0.08);
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f2ebd0; /* Cream Parchment */
+  --panel: #e6dfc3;
+  --raised: #ffffff;
+  --ink: #3b2722; /* Dark Cocoa */
+  --ink-2: #5c3e37;
+  --ink-3: #825b52;
+  --line: rgb(59 39 34 / 0.16);
+  --line-strong: rgb(59 39 34 / 0.35);
+  --dash: rgb(59 39 34 / 0.28);
+  --grid: rgb(59 39 34 / 0.08);
 
-  --glass: rgb(255 255 255 / 0.055);
-  --glass-strong: rgb(255 255 255 / 0.1);
-  --glass-border: rgb(255 255 255 / 0.12);
-  --glass-shadow: 0 1px 0 rgb(255 255 255 / 0.07) inset, 0 26px 50px -28px rgb(0 0 0 / 0.8);
-  --spot: rgb(246 211 92 / 0.16);
+  --drop-gold: #ffca50;
+  --drop-amber: #c47c10;
+  --drop-olive: #6a8018;
+  --drop-deep: #3b2722;
+  --sphere-0: #ffca50;
+  --sphere-1: #cfa320;
+  --sphere-2: #6f8216;
+  --sphere-3: #3b2722;
+  --sphere-4: #f2ebd0;
 
-  --olive: #a9bb4a;
-  --paper: #efe7c8;
+  --olive: #6fa162;
+  --verdant: #457833;
+  --amber: #a0342a;
+  --stream-a: #d99a18;
+  --stream-b: #8a7a18;
 
-  --up: #86d07b;
-  --down: #f39384;
-  --up-bg: rgb(134 208 123 / 0.14);
-  --down-bg: rgb(243 147 132 / 0.14);
-  --focus: #7db6e8;
+  --oil: #ffca50;
+  --oil-text: #8c5d00;
+  --oil-deep: #a87204;
+  --on-oil: #3b2722;
 
-  --c-ES: #c47a14;
-  --c-IT: #5090cc;
-  --c-GR: #d45e8e;
-  --c-PT: #66a845;
-  --c-other: #9a9a9a;
+  --barn-red: #a0342a;
+  --cornflower-blue: #6aacc2;
+  --sage-green: #6fa162;
 
-  --aurora-a: rgb(217 162 27 / 0.16);
-  --aurora-b: rgb(102 116 31 / 0.2);
-  --aurora-c: rgb(47 111 163 / 0.14);
-  --grain-opacity: 0.14;
+  --up: #3a7516;
+  --down: #a0342a;
+  --up-tint: rgb(58 117 22 / 0.12);
+  --down-tint: rgb(160 52 42 / 0.12);
+  --warn: #8c5d00;
+  --warn-tint: rgb(255 202 80 / 0.22);
+  --focus: #3b2722;
+
+  /* Charco de aceite inferior (OilPool) - Modo claro: oro miel puro, translúcido y suave */
+  --pool-front-0: #ffffff;
+  --pool-front-1: #ffd15c;
+  --pool-front-2: #e8a71a;
+  --pool-front-3: #cf8d12;
+
+  --pool-back-0: #ffe48a;
+  --pool-back-1: #f2be3a;
+  --pool-back-2: #d8991a;
+
+  --pool-body-0: #f2b828;
+  --pool-body-1: #e9aa1c;
+  --pool-body-2: #df9c14;
+  --pool-body-3: #d4900e;
+
+  --pool-sheen: rgba(255, 255, 255, 0.55);
+  --pool-glow: rgba(255, 202, 80, 0.35);
+  --pool-shadow: rgba(255, 255, 255, 0.4);
+
+  --c-ES: #b85e05;
+  --c-IT: #2f6fa3;
+  --c-GR: #a82e5e;
+  --c-PT: #457833;
+  --c-other: #6b6b6b;
 }

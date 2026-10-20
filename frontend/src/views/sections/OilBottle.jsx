@@ -11,8 +11,10 @@ const SURFACE_FULL = 130; // y of the liquid surface when the price sits at its 
 const SURFACE_EMPTY = 382; // ...and at its minimum
 
 /**
- * A bottle that fills according to where today's price sits inside its
- * historical range. This is the one expressive element of the page.
+ * VISTA: una botella que se llena según dónde está el precio actual dentro de su
+ * rango histórico (mínimo = vacía, máximo = llena). Es el elemento expresivo de la
+ * página, y es un dato: la marca de la izquierda indica el precio exacto.
+ * Props: level (0..1), price, min, max, product y country (textos).
  */
 export default function OilBottle({ level, price, min, max, product, country }) {
   const id = useId();
@@ -30,20 +32,14 @@ export default function OilBottle({ level, price, min, max, product, country }) 
         <clipPath id={`${id}-clip`}>
           <path d={BODY} />
         </clipPath>
+        {/* El aceite: del acento claro arriba a un tono más hondo abajo (como el aceite real en una botella). */}
         <linearGradient id={`${id}-oil`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="var(--oil-1)" />
-          <stop offset="0.45" stopColor="var(--oil-2)" />
-          <stop offset="1" stopColor="var(--oil-3)" />
-        </linearGradient>
-        <linearGradient id={`${id}-cap`} x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#4a5716" />
-          <stop offset="0.5" stopColor="#7c8d27" />
-          <stop offset="1" stopColor="#3c4711" />
+          <stop offset="0" stopColor="var(--oil)" />
+          <stop offset="1" stopColor="var(--oil-deep)" />
         </linearGradient>
       </defs>
 
       <g transform="translate(40 0)">
-        <ellipse cx="110" cy="404" rx="76" ry="9" className={styles.shadow} />
         <path d={BODY} className={styles.glass} />
 
         <g clipPath={`url(#${id}-clip)`}>
@@ -62,13 +58,11 @@ export default function OilBottle({ level, price, min, max, product, country }) 
         </g>
 
         <path d={BODY} className={styles.outline} />
-        <path d="M63 218 L63 362" className={styles.highlight} />
-        <path d="M99 54 L99 104" className={styles.highlight} />
 
-        <rect x="88" y="8" width="44" height="34" rx="8" fill={`url(#${id}-cap)`} />
+        <rect x="88" y="8" width="44" height="34" rx="3" className={styles.cap} />
         <path d="M96 14 V36 M104 14 V36 M112 14 V36 M120 14 V36" className={styles.ridges} />
 
-        <rect x="62" y="262" width="96" height="82" rx="10" className={styles.label} />
+        <rect x="62" y="262" width="96" height="82" rx="3" className={styles.label} />
         <text x="110" y="284" textAnchor="middle" className={styles.labelSmall}>
           Aceite de oliva
         </text>

@@ -2,6 +2,7 @@
 // Everything here is pure (no React, no DOM) so it is trivially testable.
 
 import { DEFAULTS, RANGES } from './constants.js';
+import { integer } from './format.js';
 
 const DAY = 86_400_000;
 
@@ -216,6 +217,187 @@ export function forecastChartRows(series, weeks = 13, historyWeeks = 52) {
   return [...history.slice(0, -1), bridge, ...future];
 }
 
+// ---------------------------------------------------------------- estado de los datos
+
+const DAY_MS = DAY;
+
+/**
+ * Qué tan al día están los datos y cómo contarlo con honestidad.
+ * Los precios son SEMANALES y llegan con retraso: no hay "tiempo real".
+ * Estados: 'demo' | 'offline' | 'fresh' | 'delayed' | 'stale'.
+ */
+export function dataStatus(meta, { now = Date.now(), refreshFailed = false } = {}) {
+  const lastT = Date.parse(meta.last_date);
+  const ageDays = Math.max(0, Math.floor((now - lastT) / DAY_MS));
+  const base = { lastDate: meta.last_date, generatedAt: meta.generated_at, ageDays };
+
+  if (meta.is_demo) return { ...base, state: 'demo', label: 'Datos de demostración (no son cifras oficiales)' };
+  if (refreshFailed) return { ...base, state: 'offline', label: 'Sin conexión: se muestran los últimos datos cargados' };
+  if (ageDays <= 21) return { ...base, state: 'fresh', label: 'Último dato disponible' };
+  if (ageDays <= 49) return { ...base, state: 'delayed', label: 'Último dato disponible, con retraso' };
+  return { ...base, state: 'stale', label: 'Datos desactualizados: último dato' };
+}
+
+// ---------------------------------------------------------------- cotizaciones
+
+/** Precio de la semana más cercana a `t`, o null si la más cercana está a más de `tolDays` días. */
+function priceNear(points, t, tolDays) {
+  let best = null;
+  for (const p of points) {
+    const gap = Math.abs(p.t - t);
+    if (!best || gap < best.gap) best = { gap, price: p.price };
+  }
+  return best && best.gap <= tolDays * DAY ? best.price : null;
+}
+
+const change = (now, before) => (before ? (now / before - 1) * 100 : null);
+
+/**
+ * Una fila por serie (país × calidad) para la tabla de cotizaciones.
+ * Todo sale de los datos reales: nada se inventa ni se estima aquí.
+ */
+export function quoteRows(model) {
+  const latest = Math.max(...[...model.index.values()].map((s) => s.points[s.points.length - 1].t));
+  const rows = [];
+  for (const s of model.index.values()) {
+    const last = s.points[s.points.length - 1];
+    const window = s.points.filter((p) => p.t > last.t - 364 * DAY);
+    const prices = window.map((p) => p.price);
+    const low52 = Math.min(...prices);
+    const high52 = Math.max(...prices);
+    rows.push({
+      id: seriesKey(s.country, s.product),
+      country: s.country,
+      countryLabel: model.countries.find((c) => c.id === s.country)?.label ?? s.country,
+      product: s.product,
+      productLabel: model.products.find((p) => p.id === s.product)?.label ?? s.product,
+      price: last.price,
+      date: last.date,
+      t: last.t,
+      weekPct: s.insight.week_change_pct,
+      monthPct: change(last.price, priceNear(s.points, last.t - 28 * DAY, 10)),
+      yearPct: s.insight.year_change_pct,
+      low52,
+      high52,
+      position: high52 > low52 ? (last.price - low52) / (high52 - low52) : 0.5,
+      spark: s.points.slice(-26).map((p) => p.price),
+      // Más de 8 semanas de retraso respecto a la serie más reciente: se marca, no se esconde.
+      stale: latest - last.t > 56 * DAY,
+    });
+  }
+  const countryOrder = model.countries.map((c) => c.id);
+  const productOrder = model.products.map((p) => p.id);
+  return rows.sort(
+    (a, b) =>
+      productOrder.indexOf(a.product) - productOrder.indexOf(b.product) ||
+      countryOrder.indexOf(a.country) - countryOrder.indexOf(b.country),
+  );
+}
+
+const SORTERS = {
+  market: (r) => r.countryLabel,
+  product: (r) => r.productLabel,
+  price: (r) => r.price,
+  week: (r) => r.weekPct,
+  month: (r) => r.monthPct,
+  year: (r) => r.yearPct,
+  position: (r) => r.position,
+  date: (r) => r.t,
+};
+
+/** Ordena filas por columna. Los huecos (null) van siempre al final, sea cual sea el sentido. */
+export function sortQuotes(rows, key, direction = 'desc') {
+  const pick = SORTERS[key];
+  if (!pick) return [...rows];
+  const sign = direction === 'asc' ? 1 : -1;
+  return [...rows].sort((a, b) => {
+    const x = pick(a);
+    const y = pick(b);
+    if (x == null && y == null) return 0;
+    if (x == null) return 1;
+    if (y == null) return -1;
+    const order = typeof x === 'string' ? x.localeCompare(y, 'es') : x - y;
+    return order * sign;
+  });
+}
+
+// ---------------------------------------------------------------- lectura del periodo
+
+/** Cifras del periodo visible: inicio, final, variación, máximo y mínimo (con sus fechas). */
+export function periodStats(points) {
+  if (points.length < 2) return null;
+  const first = points[0];
+  const last = points[points.length - 1];
+  const high = points.reduce((a, b) => (b.price > a.price ? b : a));
+  const low = points.reduce((a, b) => (b.price < a.price ? b : a));
+  return {
+    start: first,
+    end: last,
+    change: last.price - first.price,
+    changePct: change(last.price, first.price),
+    high,
+    low,
+  };
+}
+
+/**
+ * Variación del último precio frente a la semana anterior, 4 semanas, 1 año y el máximo histórico.
+ * Cada una trae el cambio absoluto (€/t), el porcentual y el precio con el que se compara.
+ */
+export function priceChanges(series) {
+  const points = series.points;
+  const last = points[points.length - 1];
+  const make = (from) => (from == null ? null : { from, abs: last.price - from, pct: change(last.price, from) });
+  return {
+    week: make(points.length > 1 ? points[points.length - 2].price : null),
+    month: make(priceNear(points, last.t - 28 * DAY, 10)),
+    year: make(priceNear(points, last.t - 364 * DAY, 10)),
+    peak: make(series.insight.peak_price),
+  };
+}
+
+/** Una línea por país en el modo "comparar": último precio y variación del periodo visible. */
+export function compareStats(model, product, rangeId) {
+  return model.countries
+    .map((c) => {
+      const series = getSeries(model, c.id, product);
+      if (!series) return null;
+      const stats = periodStats(sliceRange(series.points, rangeId));
+      return stats ? { id: c.id, label: c.label, last: stats.end.price, changePct: stats.changePct, date: stats.end.date } : null;
+    })
+    .filter(Boolean);
+}
+
+/** Precio por kilo (los datos vienen en €/t). Es una simple conversión, no un dato nuevo. */
+export const perKg = (pricePerTonne) => pricePerTonne / 1000;
+
+/** CSV de la serie visible (separador coma, decimales con punto, fechas ISO). */
+export function toCsv(points, { country, product }) {
+  const lines = ['fecha,pais,calidad,precio_eur_por_tonelada'];
+  for (const p of points) lines.push(`${p.date},${country},${product},${p.price}`);
+  return `${lines.join('\n')}\n`;
+}
+
+/**
+ * Frase de resumen del mercado, construida SOLO con cifras de los datos.
+ * No explica causas: describe dónde está el precio respecto a su historia.
+ */
+export function marketSentence({ insight, productLabel, countryLabel }) {
+  const fmt = (n, d = 0) => Math.abs(n).toLocaleString('es-ES', { minimumFractionDigits: d, maximumFractionDigits: d });
+  const peakMonth = new Date(`${insight.peak_date}T00:00:00Z`).toLocaleDateString('es-ES', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+  const head = `En ${countryLabel}, el ${productLabel}`;
+  const vsPeak =
+    insight.from_peak_pct >= -0.05
+      ? `está en su máximo histórico (${integer(insight.peak_price)} €/t)`
+      : `cotiza un ${fmt(insight.from_peak_pct, 1)} % por debajo de su máximo (${integer(insight.peak_price)} €/t en ${peakMonth})`;
+  if (insight.year_change_pct == null) return `${head} ${vsPeak}.`;
+  const vsYear =
+    Math.abs(insight.year_change_pct) < 0.05
+      ? 'y está igual que hace un año'
+      : `y un ${fmt(insight.year_change_pct, 1)} % ${insight.year_change_pct < 0 ? 'por debajo' : 'por encima'} de hace un año`;
+  return `${head} ${vsPeak} ${vsYear}.`;
+}
+
 /** Everything the dashboard view renders for a given selection. */
 export function buildViewModel(model, selection) {
   const series = getSeries(model, selection.country, selection.product);
@@ -230,6 +412,17 @@ export function buildViewModel(model, selection) {
     monthly: toMonthly(visible),
     heatmap: seasonalHeatmap(series?.points ?? []),
     forecast: series?.forecast ?? null,
+    stats: periodStats(visible),
+    changes: series ? priceChanges(series) : null,
+    compareStats: compareStats(model, selection.product, selection.range),
+    quotes: quoteRows(model),
+    summary: series
+      ? marketSentence({
+          insight: series.insight,
+          productLabel: (model.products.find((p) => p.id === selection.product)?.label ?? selection.product).toLowerCase(),
+          countryLabel: model.countries.find((c) => c.id === selection.country)?.label ?? selection.country,
+        })
+      : null,
     compare: compareRows(model, selection.product, selection.range),
     production: productionRows(model),
     countryLabel: model.countries.find((c) => c.id === selection.country)?.label ?? selection.country,

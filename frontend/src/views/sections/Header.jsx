@@ -1,20 +1,41 @@
-import { Download } from 'lucide-react';
-import { DATA_URL } from '../../services/dashboardService.js';
-import GlowButton from '../ui/GlowButton.jsx';
+// VISTA: cabecera fija con la marca, el menú de secciones y el cambio de tema.
+// Inspirada en la barra de navegación de DESIGN (3).md: estilo editorial Dark Cocoa / Cream Parchment,
+// enlaces en mayúsculas espaciadas y marca icónica de la gota de aceite.
 import ThemeSwitch from '../ui/ThemeSwitch.jsx';
 import styles from './Header.module.css';
 
-function Logo() {
+const NAV = [
+  { href: '#mercado', label: 'Mercado' },
+  { href: '#evolucion', label: 'Evolución' },
+  { href: '#prevision', label: 'Previsión' },
+  { href: '#contexto', label: 'Contexto' },
+  { href: '#metodo', label: 'Calculadora' },
+];
+
+// La marca: una gota de aceite dorada con reflejo líquido
+function Mark() {
   return (
-    <svg viewBox="0 0 64 64" width="34" height="34" aria-hidden="true">
+    <svg viewBox="0 0 32 36" width="26" height="30" aria-hidden="true">
       <defs>
-        <linearGradient id="logo-oil" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#f6d35c" />
-          <stop offset="1" stopColor="#8e8a1a" />
+        <linearGradient id="headerDropGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#fff2ab" />
+          <stop offset="35%" stopColor="var(--color-honeycomb-gold, #ffca50)" />
+          <stop offset="100%" stopColor="var(--amber, #e08a22)" />
         </linearGradient>
       </defs>
-      <path d="M32 4C22 18 14 28 14 40a18 18 0 0 0 36 0C50 28 42 18 32 4Z" fill="url(#logo-oil)" />
-      <path d="M24 42a8 8 0 0 0 6 8" stroke="#fff" strokeOpacity=".65" strokeWidth="3" fill="none" strokeLinecap="round" />
+      <path
+        d="M 16 3 C 16 3 26 14 26 22 C 26 27.5 21.5 32 16 32 C 10.5 32 6 27.5 6 22 C 6 14 16 3 16 3 Z"
+        fill="url(#headerDropGrad)"
+      />
+      <path
+        d="M 12 18 C 11.5 21 13 24 16 26"
+        fill="none"
+        stroke="#ffffff"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        opacity="0.8"
+      />
+      <circle cx="16" cy="34" r="1.5" fill="var(--color-honeycomb-gold, #ffca50)" />
     </svg>
   );
 }
@@ -22,14 +43,18 @@ function Logo() {
 export default function Header({ theme }) {
   return (
     <header className={styles.header}>
-      <a className={styles.brand} href="#contenido" aria-label="Oleómetro, inicio">
-        <Logo />
-        <span>Oleómetro</span>
-      </a>
-      <div className={styles.actions}>
-        <GlowButton href={DATA_URL} download="oleometro-datos.json" icon={<Download size={16} aria-hidden="true" />}>
-          Descargar datos
-        </GlowButton>
+      <div className={styles.inner}>
+        <a className={styles.brand} href="#mercado" aria-label="Oleómetro, ir al inicio">
+          <Mark />
+          <span className={styles.name}>Oleómetro</span>
+        </a>
+        <nav className={styles.nav} aria-label="Secciones">
+          {NAV.map((item) => (
+            <a key={item.href} href={item.href}>
+              {item.label}
+            </a>
+          ))}
+        </nav>
         <ThemeSwitch theme={theme.theme} onToggle={theme.toggle} />
       </div>
     </header>

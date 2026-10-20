@@ -1,0 +1,30 @@
+.bar {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-width: 56px;
+  height: 4px;
+  background: var(--line);
+  border-radius: 2px;
+}
+
+.fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--line-strong);
+  border-radius: 2px;
+}
+
+.mark {
+  position: absolute;
+  top: 50%;
+  width: 3px;
+  height: 14px;
+  background: var(--ink);
+  border-radius: 1px;
+  transform: translate(-50%, -50%);
+}
+
+.oil .fill {
+  background: var(--oil);
+}

@@ -1,0 +1,17 @@
+.bone {
+  display: block;
+  max-width: 100%;
+  border-radius: var(--r-1);
+  background: linear-gradient(90deg, var(--raised) 0%, var(--line) 50%, var(--raised) 100%);
+  background-size: 220% 100%;
+  animation: sweep 1.4s ease-in-out infinite;
+}
+
+@keyframes sweep {
+  from {
+    background-position: 120% 0;
+  }
+  to {
+    background-position: -120% 0;
+  }
+}

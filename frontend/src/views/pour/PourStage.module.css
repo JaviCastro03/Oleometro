@@ -1,0 +1,23 @@
+.stage {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Resplandor cálido ambiental en la parte superior */
+.stage::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 110svh;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(45% 45% at 75% 25%, color-mix(in srgb, var(--oil) 14%, transparent), transparent 70%),
+    radial-gradient(55% 45% at 20% 70%, color-mix(in srgb, var(--olive) 8%, transparent), transparent 70%);
+}
+
+.layer {
+  position: relative;
+  z-index: 1;
+}

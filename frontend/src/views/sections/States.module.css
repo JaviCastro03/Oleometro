@@ -1,0 +1,39 @@
+.loading {
+  display: grid;
+  gap: var(--s-4);
+  padding-top: var(--s-5);
+}
+
+.error {
+  display: grid;
+  gap: var(--s-3);
+  justify-items: start;
+  max-width: 56ch;
+  padding: var(--s-6) 0;
+}
+
+.error h2 {
+  font-size: var(--text-xl);
+}
+
+.error p {
+  color: var(--ink-2);
+}
+
+.retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: var(--r-1);
+  background: var(--oil);
+  color: var(--on-oil);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.retry:hover {
+  filter: brightness(1.06);
+}

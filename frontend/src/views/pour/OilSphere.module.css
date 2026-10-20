@@ -1,0 +1,73 @@
+.wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 320 / 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropSvg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 20px 40px rgb(0 0 0 / 0.45));
+  animation: dropBreathe 7s ease-in-out infinite alternate;
+  transform-origin: 50% 15%;
+}
+
+.ambientHalo {
+  opacity: 0.18;
+  filter: blur(28px);
+  transform-origin: 50% 50%;
+  animation: haloPulse 5s ease-in-out infinite alternate;
+}
+
+.dropBody {
+  filter: drop-shadow(0 8px 16px rgb(59 39 34 / 0.4));
+}
+
+.sheen {
+  opacity: 0.85;
+}
+
+@keyframes dropBreathe {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.02, 0.985) rotate(0.4deg);
+  }
+  100% {
+    transform: scale(0.99, 1.015) rotate(-0.4deg);
+  }
+}
+
+@keyframes haloPulse {
+  0% {
+    opacity: 0.12;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 0.26;
+    transform: scale(1.08);
+  }
+}
+
+/* Base de la gota */
+.mouth {
+  position: absolute;
+  left: 50%;
+  bottom: 0%;
+  width: 2px;
+  height: 2px;
+  margin-left: -1px;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dropSvg,
+  .ambientHalo {
+    animation: none;
+  }
+}

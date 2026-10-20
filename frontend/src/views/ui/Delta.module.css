@@ -1,0 +1,36 @@
+.delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sm {
+  font-size: var(--text-sm);
+}
+
+.md {
+  font-size: var(--text-md);
+}
+
+.lg {
+  font-size: var(--text-lg);
+}
+
+.up {
+  color: var(--up);
+}
+
+.down {
+  color: var(--down);
+}
+
+.flat,
+.none {
+  color: var(--ink-3);
+}
+
+.none {
+  font-weight: 500;
+}

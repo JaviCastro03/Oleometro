@@ -1,26 +1,66 @@
 .footer {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 24px 48px;
-  margin-top: clamp(16px, 3vw, 40px);
-  padding-block: 28px 48px;
-  border-top: 1px solid var(--line);
-  font-size: var(--step--1);
+  gap: var(--s-4);
+  margin-top: var(--s-7);
+  padding: var(--s-6) 0 var(--s-7);
+  border-top: 2px solid var(--color-honeycomb-gold, #ffca50);
+}
+
+/* Marca gigante (Dala): peso 400 y tracking negativo */
+.mega {
+  font-size: clamp(3.4rem, 1rem + 13vw, 10rem);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  color: var(--ink);
+}
+
+.inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--s-5);
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.text {
+  max-width: 52ch;
+  margin-top: var(--s-1);
+  font-size: var(--text-sm);
   color: var(--ink-3);
-  line-height: 1.6;
 }
 
-.footer p {
-  max-width: 62ch;
+.links {
+  display: flex;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-5);
+  font-size: var(--text-sm);
 }
 
-.strong {
-  margin-bottom: 4px;
-  font-weight: 700;
+.links a {
   color: var(--ink-2);
 }
 
-.footer a {
-  color: var(--ink-2);
-  text-underline-offset: 3px;
+.links a:hover {
+  color: var(--ink);
+}
+
+.legal {
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+}
+
+/* Crédito en ámbar: el acento "editorial" de ORYZO */
+.legal a {
+  color: var(--amber);
 }

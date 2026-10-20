@@ -4,9 +4,17 @@ import {
   buildTimeAxis,
   buildViewModel,
   compareRows,
+  dataStatus,
   describeBacktest,
   forecastChartRows,
   forecastLabel,
+  marketSentence,
+  compareStats,
+  periodStats,
+  priceChanges,
+  quoteRows,
+  sortQuotes,
+  toCsv,
   formatHash,
   getSeries,
   parseHash,
@@ -98,7 +106,7 @@ describe('model', () => {
 
 describe('selection', () => {
   it('falls back to valid defaults', () => {
-    expect(resolveSelection(model, { country: 'ZZ', product: 'nope', range: 'x' })).toEqual({ country: 'ES', product: 'evoo', range: 'all' });
+    expect(resolveSelection(model, { country: 'ZZ', product: 'nope', range: 'x' })).toEqual({ country: 'ES', product: 'evoo', range: '3y' });
     expect(resolveSelection(model, { country: 'IT', product: 'evoo', range: '3y' })).toEqual({ country: 'IT', product: 'evoo', range: '3y' });
   });
 
@@ -164,5 +172,104 @@ describe('forecast', () => {
     const bad = describeBacktest({ samples: 20, mean_error_pct: 9, vs_naive_pct: -3, direction_hit_pct: null, direction_samples: 0 });
     expect(bad).toContain('tómalo con mucha cautela');
     expect(describeBacktest(null)).toBeNull();
+  });
+});
+
+describe('data status', () => {
+  const meta = { is_demo: false, last_date: '2025-01-06', generated_at: '2025-01-13T06:00:00+00:00' };
+  const at = (day) => Date.parse(`${day}T12:00:00Z`);
+
+  it('labels fresh, delayed and stale data honestly', () => {
+    expect(dataStatus(meta, { now: at('2025-01-13') }).state).toBe('fresh');
+    expect(dataStatus(meta, { now: at('2025-02-10') }).state).toBe('delayed');
+    expect(dataStatus(meta, { now: at('2025-04-01') }).state).toBe('stale');
+  });
+
+  it('reports demo data and lost connections before anything else', () => {
+    expect(dataStatus({ ...meta, is_demo: true }, { now: at('2025-01-13') }).state).toBe('demo');
+    expect(dataStatus(meta, { now: at('2025-01-13'), refreshFailed: true }).state).toBe('offline');
+  });
+});
+
+describe('quotes table', () => {
+  const rows = quoteRows(model);
+
+  it('has one row per series with real changes and a 52-week position', () => {
+    expect(rows).toHaveLength(2);
+    const es = rows.find((r) => r.country === 'ES');
+    expect(es.price).toBe(135);
+    expect(es.low52).toBe(90);
+    expect(es.high52).toBe(140);
+    expect(es.position).toBeCloseTo((135 - 90) / 50);
+    expect(es.stale).toBe(false);
+  });
+
+  it('flags a series that stopped publishing', () => {
+    const old = buildModel({
+      ...payload,
+      series: [payload.series[0], { ...payload.series[1], points: weeks('2023-01-01', [150, 160, 155]) }],
+    });
+    expect(quoteRows(old).find((r) => r.country === 'IT').stale).toBe(true);
+  });
+
+  it('sorts by any column and keeps gaps last in both directions', () => {
+    const sample = [
+      { countryLabel: 'B', price: 2, weekPct: null },
+      { countryLabel: 'A', price: 3, weekPct: 1 },
+      { countryLabel: 'C', price: 1, weekPct: -1 },
+    ];
+    expect(sortQuotes(sample, 'price', 'desc').map((r) => r.price)).toEqual([3, 2, 1]);
+    expect(sortQuotes(sample, 'market', 'asc').map((r) => r.countryLabel)).toEqual(['A', 'B', 'C']);
+    expect(sortQuotes(sample, 'week', 'desc').map((r) => r.weekPct)).toEqual([1, -1, null]);
+    expect(sortQuotes(sample, 'week', 'asc').map((r) => r.weekPct)).toEqual([-1, 1, null]);
+  });
+});
+
+describe('reading the period', () => {
+  const points = getSeries(model, 'ES', 'evoo').points;
+
+  it('summarises start, end, extremes and change', () => {
+    const stats = periodStats(points);
+    expect(stats.start.price).toBe(100);
+    expect(stats.end.price).toBe(135);
+    expect(stats.change).toBe(35);
+    expect(stats.changePct).toBeCloseTo(35);
+    expect(stats.high.price).toBe(140);
+    expect(stats.low.price).toBe(90);
+    expect(periodStats(points.slice(0, 1))).toBeNull();
+  });
+
+  it('exports the visible series as CSV', () => {
+    const csv = toCsv(points.slice(0, 2), { country: 'ES', product: 'evoo' });
+    expect(csv.split('\n')).toEqual(['fecha,pais,calidad,precio_eur_por_tonelada', '2024-01-07,ES,evoo,100', '2024-01-14,ES,evoo,120', '']);
+  });
+
+  it('describes the market using only data figures', () => {
+    const text = marketSentence({
+      insight: { peak_date: '2024-03-01', peak_price: 9012, from_peak_pct: -62.94, year_change_pct: -12.3 },
+      productLabel: 'virgen extra',
+      countryLabel: 'España',
+    });
+    expect(text).toBe('En España, el virgen extra cotiza un 62,9 % por debajo de su máximo (9.012 €/t en marzo de 2024) y un 12,3 % por debajo de hace un año.');
+  });
+});
+
+describe('changes and comparison', () => {
+  it('computes absolute and percentage changes against each reference', () => {
+    const series = getSeries(model, 'ES', 'evoo');
+    const changes = priceChanges({ ...series, insight: { ...series.insight, peak_price: 140 } });
+    expect(changes.week.from).toBe(140);
+    expect(changes.week.abs).toBe(-5);
+    expect(changes.week.pct).toBeCloseTo((135 / 140 - 1) * 100);
+    expect(changes.month.from).toBe(95);
+    expect(changes.peak.abs).toBe(-5);
+    expect(changes.year).toBeNull();
+  });
+
+  it('summarises each country over the visible period', () => {
+    const rows = compareStats(model, 'evoo', 'all');
+    expect(rows.map((r) => r.id)).toEqual(['ES', 'IT']);
+    expect(rows[0].last).toBe(135);
+    expect(rows[0].changePct).toBeCloseTo(35);
   });
 });
